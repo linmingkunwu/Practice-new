@@ -361,3 +361,32 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ========================================================
+# Project-specific & generic additions
+# ========================================================
+
+# --- Python ---
+# Virtual environments
+.venv/
+venv/
+env/
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+# pyenv
+.python-version
+
+# --- Generated output ---
+output/
+
+# --- OS ---
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+ehthumbs.db
