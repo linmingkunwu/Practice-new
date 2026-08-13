@@ -1,7 +1,9 @@
 import random
 
+
 def get_random_number():
     return random.randint(0, 100)
+
 
 def compare_numbers(user_num, computer_num):
     print(f"电脑出数字：{computer_num}")
@@ -11,6 +13,7 @@ def compare_numbers(user_num, computer_num):
         print("lose")
     else:
         print("平手")
+
 
 for count in range(1, 11):
     while True:
