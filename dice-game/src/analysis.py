@@ -72,6 +72,7 @@ class SimulationStats:
     theoretical_win_prob: float
     theoretical_pooled_rate: float
     theoretical_expected_rolls: float
+    theoretical_variance_rolls: float
     ci_95_rolls: Tuple[float, float]
     ci_95_win_rate: Tuple[float, float]
 
@@ -106,6 +107,9 @@ def compute_stats(results: List[GameResult], label: str, rigged: bool) -> Simula
     sum([g.total_wins for g in results])  ← 先创建列表，再多此一举
     对于 100K 个元素，性能差异不大，但生成器是正确的惯用法。
     """
+    if not results:
+        raise ValueError("results must not be empty")
+
     # 提取所有游戏的轮数，转为 NumPy 数组
     rolls = np.array([g.total_rolls for g in results])
     n = len(results)
@@ -125,7 +129,7 @@ def compute_stats(results: List[GameResult], label: str, rigged: bool) -> Simula
     # 这个条件表达式先检查 results 是否非空。
     # 如果 results 是空列表，不会尝试 results[0]（会 IndexError）。
     # 也可以用: (results or [None])[0] 但这不够清晰。
-    n_wins_target = results[0].n_wins_target if results else 5
+    n_wins_target = results[0].n_wins_target
     se_pooled_rate = (n_wins_target / mean_rolls**2) * (std_rolls / np.sqrt(n))
 
     mean_win_rate = pooled_win_rate
@@ -134,14 +138,15 @@ def compute_stats(results: List[GameResult], label: str, rigged: bool) -> Simula
     # 理论值
     if rigged:
         theo_p = rigged_win_probability()
-        # 【Python 知识点: 元组解包 + 丢弃不需要的值】
+        # 【Python 知识点: 元组解包】
         # expected_rolls_and_variance_rigged 返回 (期望, 方差)
-        # 用 _ 接收方差，表示"我不需要这个值"
-        theo_e, _ = expected_rolls_and_variance_rigged(5)
+        theo_e, theo_var = expected_rolls_and_variance_rigged(5)
         theo_pooled_rate = 5.0 / theo_e
     else:
         theo_p = normal_win_probability()
         theo_e = expected_rolls_normal(5)
+        # 负二项分布方差公式: Var = r·(1-p)/p² = 5×0.5/0.25 = 10
+        theo_var = n_wins_target * (1 - theo_p) / (theo_p ** 2)
         theo_pooled_rate = theo_p
 
     # 置信区间
@@ -168,6 +173,7 @@ def compute_stats(results: List[GameResult], label: str, rigged: bool) -> Simula
         theoretical_win_prob=theo_p,
         theoretical_pooled_rate=theo_pooled_rate,
         theoretical_expected_rolls=theo_e,
+        theoretical_variance_rolls=theo_var,
         ci_95_rolls=ci_rolls,
         ci_95_win_rate=ci_wr,
     )
@@ -189,6 +195,12 @@ def compute_convergence_curves(
     表示返回一个包含 4 个 NumPy 数组的元组。
     Python 3.8 及更早需要用 typing.Tuple[ndarray, ndarray, ndarray, ndarray]。
     两种写法等价，小写版本更简洁。
+
+    【返回值的采样对齐】
+    返回的 4 个数组都只在对数采样点 idx 处取值（长度 ≤ 500），
+    曲线和置信带因此天然对齐，可直接绘制。
+    之前的实现返回全量数组，绘图时再做步进降采样，
+    会导致置信带与采样点错位（大部分填充点被跳过，带宽范围失真）。
 
     【Python 知识点: NumPy 的累积运算和向量化】
     这是本文件中 NumPy 使用最密集的函数。
@@ -226,6 +238,8 @@ def compute_convergence_curves(
             all_wins.append(1 if rr.won else 0)
 
     total_rounds = len(all_wins)
+    if total_rounds == 0:
+        return (np.array([]), np.array([]), np.array([]), np.array([]))
 
     # 【Python 知识点: NumPy 数组的生成和运算】
     # np.arange(1, n+1) → 创建 [1, 2, 3, ..., n] 的数组
@@ -241,8 +255,13 @@ def compute_convergence_curves(
     # 用对数间隔采样，计算量从 2.6M 降到 ~500 个点
     n_sample_pts = min(500, total_rounds)
     if total_rounds > n_sample_pts:
+        # 用对数间隔采样，计算量从 2.6M 降到 ~500 个点。
+        # 开头补上索引 0，确保曲线从第 1 轮开始绘制。
         idx = np.unique(
-            np.logspace(0, np.log10(total_rounds - 1), n_sample_pts).astype(int)
+            np.append(
+                0,
+                np.logspace(0, np.log10(total_rounds - 1), n_sample_pts).astype(int),
+            )
         )
     else:
         idx = np.arange(total_rounds)
@@ -271,7 +290,9 @@ def compute_convergence_curves(
         ci_lower[i] = max(0, center - margin)
         ci_upper[i] = min(1, center + margin)
 
-    return rounds, cum_rates, ci_lower, ci_upper
+    # 返回与采样点对齐的数组：曲线与置信带都只在 idx 处取值，
+    # 直接用于绘图，避免 NaN 与降采样错位。
+    return rounds[idx], cum_rates[idx], ci_lower[idx], ci_upper[idx]
 
 
 # ============================================================
@@ -314,6 +335,9 @@ def compute_round_by_round_win_rate(results: List[GameResult]) -> Dict[int, floa
     但 sorted() 返回排序后的键列表，确保输出有序。
     Python 3.7+ 字典保证按插入顺序，但显式排序仍然更安全。
     """
+    if not results:
+        return {}
+
     round_wins: Dict[int, int] = {}
     round_totals: Dict[int, int] = {}
 

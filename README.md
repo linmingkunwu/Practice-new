@@ -13,6 +13,11 @@
 │       ├── game.py          # 蒙特卡洛模拟
 │       ├── analysis.py      # 统计分析
 │       └── visualization.py # Matplotlib 图表生成
+├── learning-python/          # 📚 Python 学习笔记与练习
+│   ├── AI相关/              # AI 相关小练习
+│   ├── 基础语法/            # 基础语法示例
+│   ├── 高级语法/            # 高级语法示例
+│   └── 练习作业/            # 练习作业
 ├── WorkerService1/           # ⚙️ .NET Worker Service（后台服务模板）
 │   ├── Program.cs
 │   ├── Worker.cs

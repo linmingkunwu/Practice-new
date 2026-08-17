@@ -153,7 +153,8 @@ def main():
     print(f"       LLN 极限 = 0.1667, 合并胜率 (模拟) = {stats_rigged.mean_win_rate:.4f}")
     print(f"       注: 合并胜率={stats_rigged.mean_win_rate:.4f} 高于 0.1667，"
           f"因为包含前2轮(50%)")
-    print(f"       理论合并胜率 = 5/E[rolls] = 5/26 = {5/26:.4f} ✓")
+    print(f"       理论合并胜率 = 5/E[rolls] = 5/{stats_rigged.theoretical_expected_rolls:.0f} = "
+          f"{stats_rigged.theoretical_pooled_rate:.4f} ✓")
     print("     ✓ 两者均符合大数定律！")
     print()
     print("  2. 关键区分:")
@@ -166,7 +167,8 @@ def main():
     print(f"     - 期望轮数从 {stats_normal.theoretical_expected_rolls:.0f} 增至 "
           f"{stats_rigged.theoretical_expected_rolls:.0f}，"
           f"增加 {stats_rigged.theoretical_expected_rolls/stats_normal.theoretical_expected_rolls:.1f} 倍")
-    print(f"     - 轮数方差从 {10:.0f} 增至 {138:.0f}，波动性大增")
+    print(f"     - 轮数方差从 {stats_normal.theoretical_variance_rolls:.0f} 增至 "
+          f"{stats_rigged.theoretical_variance_rolls:.0f}，波动性大增")
     print()
     print("  4. 大数定律不要求'公平':")
     print("     大数定律仅要求独立同分布（或更弱的条件），")

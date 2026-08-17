@@ -268,23 +268,14 @@ def plot_lln_convergence(
     """
     图表2 — 大数定律(LLN)收敛图（核心图表）。
 
-    【Python 知识点: 切片 (Slicing) — NumPy 数组的高效子集】
-    本函数大量使用数组切片来控制绘图性能:
-      r_normal[::step]  —  从开始到结束，步长为 step
-      等价于 r_normal[0:len:step]
-
-    切片语法: array[start:stop:step]
-      arr[::50]   → 每 50 个取 1 个
-      arr[:100]   → 前 100 个
-      arr[-10:]   → 最后 10 个
-      arr[::-1]   → 反转数组
-
-    为什么要下采样？
+    【Python 知识点: 数据降采样 (Downsampling)】
     原始数据有 ~2.6M 个点。如果全部画出来:
       - 渲染极慢（几秒到几十秒）
       - 文件巨大（几十 MB）
-      - 屏幕上看不出区别（2000 点已足够平滑）
-    max(1, len // 2000) 保证步长至少为 1。
+      - 屏幕上看不出区别（几百点已足够平滑）
+    因此 compute_convergence_curves 内部用 np.logspace 做对数间隔采样
+    （≤500 点，前面密集后面稀疏），返回的曲线和置信带已对齐，
+    本函数直接绘制，不再二次降采样。
     """
     r_normal, rates_normal, lo_n, hi_n = compute_convergence_curves(
         normal_results, max_rounds
@@ -295,24 +286,18 @@ def plot_lln_convergence(
 
     fig, ax = plt.subplots(figsize=(13, 6))
 
-    # 内部函数: 对数据进行步进采样
-    def subsample(x, step=50):
-        """每隔 step 个元素取一个，减少绘图数据量。"""
-        return x[::step]
-
     # 【Python 知识点: fill_between — 区域填充】
     # 在两条曲线之间填充颜色，用于显示置信带。
     # alpha=0.06 非常透明——只给出"区域存在"的暗示，不遮挡主曲线。
-    ax.fill_between(subsample(r_normal), subsample(lo_n), subsample(hi_n),
+    ax.fill_between(r_normal, lo_n, hi_n,
                     color=BLUE, alpha=0.06, linewidth=0)
-    ax.fill_between(subsample(r_rigged), subsample(lo_r), subsample(hi_r),
+    ax.fill_between(r_rigged, lo_r, hi_r,
                     color=ORANGE, alpha=0.06, linewidth=0)
 
     # 主曲线
-    step = max(1, len(r_normal) // 2000)
-    ax.plot(r_normal[::step], rates_normal[::step],
+    ax.plot(r_normal, rates_normal,
             color=BLUE, linewidth=1.8, label="正常骰子", zorder=4)
-    ax.plot(r_rigged[::step], rates_rigged[::step],
+    ax.plot(r_rigged, rates_rigged,
             color=ORANGE, linewidth=1.8, label="操纵骰子 (R3+)", zorder=4)
 
     # 理论极限虚线
