@@ -38,6 +38,20 @@ gh pr create --base main --head <分支名> --title "<标题>" --body-file <正�
 ### 4. 回报
 PR URL、分支名、改动文件清单、校验结果。
 
+## 从 VSCode / 任意终端调用（headless 模式）
+
+在项目目录打开 VSCode 集成终端，直接让 agent 跑整个流程（无需打开 Web 界面）：
+
+```powershell
+# 完整流程：审查改进 → 校验 → 建分支 → 提交 → 推送 → 创建 PR
+dsh --profile headless "加载 pr-flow 技能，对当前仓库跑一遍开发流程"
+
+# 更省事：已安装全局别名 dsh-flow（PowerShell profile 自带），默认即跑完整流程，可传自定义提示词
+dsh-flow "对 dice-game 目录审查改进并提 PR"
+```
+
+说明：headless 以**当前目录**为工作区根，首次运行会自动初始化 headless profile；结束后直接打印最终答案并退出。
+
 ## 注意事项
 - `pr-flow.ps1` 是 **UTF-8 BOM** 文件（Windows PowerShell 5.1 需要），必须用 PowerShell 执行，不要用 bash
 - 提交消息/PR 正文含中文时：写 UTF-8 临时文件再 `-F`/`--body-file`，避免命令行编码乱码

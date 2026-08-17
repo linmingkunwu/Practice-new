@@ -53,6 +53,15 @@ prflow -Title "feat: 新增功能" -CommitMessage "feat: 新增功能"
 #   -SkipPush           只做本地提交
 ```
 
+### 在 VSCode / 终端里直接调 agent（headless）
+
+不打开 Web 界面，直接在项目目录的 VSCode 集成终端让 agent 跑完整流程（审查改进 → 校验 → PR）：
+
+```powershell
+dsh-flow "对当前仓库跑一遍开发流程"          # 全局别名（已写入 PowerShell profile）
+dsh --profile headless "加载 pr-flow 技能，审查 dice-game 并提 PR"
+```
+
 自动校验逻辑：改动的 `.py` 文件逐个 `py_compile`；仓库内发现 `.csproj`/`.sln` 则逐个 `dotnet build`。新项目可直接从模板仓库 **linmingkunwu/project-template** 创建，自带本脚本与 GitHub Actions CI（PR 自动跑 Python/.NET 检查）。
 
 ## 许可证
