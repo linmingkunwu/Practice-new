@@ -390,3 +390,29 @@ output/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# --- Harness / personal config ---
+# DSH agent presets / skills (个人 harness 配置，不应入库)
+.dsh/
+
+# --- Environment / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- IDEs / editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+
+# --- Python tooling caches & reports ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.hypothesis/
+htmlcov/
+.coverage.*
