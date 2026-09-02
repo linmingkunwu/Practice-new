@@ -167,11 +167,17 @@ def simulate_infinite_rounds(
     洞牌在开局即抽出（先翻洞牌再看牌）: 无限牌库下每次抽取
     独立同分布，洞牌先抽或后抽完全等价，故采用最简单的写法。
 
-    【Python 知识点: random.Random 局部实例】
-    与 cards.py 的 build_shoe_cards 同理: 用局部实例隔离随机源，
-    同一 seed 结果完全可复现，也不干扰全局 random 的状态。
+    【两个随机源都要播种 —— 与 monte_carlo_shoe 的契约一致】
+    发牌用局部实例 rng = random.Random(seed)；
+    但含随机决策的策略（RandomStrategy）用的是模块级全局
+    random。若不在这里重置全局状态，相同 seed 的两次调用
+    会因"调用前全局状态不同"而得到不同结果（不可复现）。
+    因此 seed 非 None 时同时重置两者 —— 与牌靴引擎开头
+    random.seed(seed) 的行为保持一致。
     """
-    rng = random.Random(seed)
+    if seed is not None:
+        random.seed(seed)          # 供策略内部的随机决策使用
+    rng = random.Random(seed)      # 供发牌使用（与全局隔离）
     records: List[RoundRecord] = []
 
     for i in range(1, n_rounds + 1):
