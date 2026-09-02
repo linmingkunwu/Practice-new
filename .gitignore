@@ -367,24 +367,46 @@ FodyWeavers.xsd
 # ========================================================
 
 # --- Python ---
-# Virtual environments
+# 虚拟环境
 .venv/
 venv/
 env/
-# Distribution / packaging
+# 字节码缓存
+__pycache__/
+*.py[cod]
+*$py.class
+# 分发 / 打包
 *.egg-info/
 *.egg
 dist/
 build/
-# Jupyter Notebook checkpoints
+# 测试 / 类型检查 / lint 缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+# Jupyter Notebook 检查点
 .ipynb_checkpoints/
-# pyenv
+# 版本管理
 .python-version
 
-# --- Generated output ---
+# --- 环境变量 / 密钥（勿提交真实密钥） ---
+.env
+.env.*
+!.env.example
+
+# --- 编辑器 / IDE ---
+.idea/          # PyCharm
+# .vscode/      # 如需共享 VS Code 配置，可取消注释并按需保留 settings.json
+
+# --- 生成输出 ---
 output/
 
-# --- OS ---
+# --- 操作系统 ---
 # macOS
 .DS_Store
 # Windows
