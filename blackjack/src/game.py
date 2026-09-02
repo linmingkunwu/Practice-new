@@ -214,7 +214,13 @@ def simulate_infinite_rounds(
                 action = strategy.decide(ctx)
                 if action == "S":
                     break
-                if action == "D" and two_card:
+                if action == "D":
+                    # 加倍只允许首两张 —— 策略违规时快速失败(fail loud),
+                    # 而不是静默当成要牌处理(那样会掩盖策略 bug)。
+                    if not two_card:
+                        raise ValueError(
+                            f"策略 {strategy.name} 在非首两张时请求加倍"
+                        )
                     ranks.append(_infinite_draw(rng))
                     total, soft = hand_value(ranks)
                     if total > 21:
@@ -394,7 +400,13 @@ def play_round_shoe(shoe: Shoe, strategy: BaseStrategy,
         action = strategy.decide(ctx)
         if action == "S":
             break
-        if action == "D" and two_card:
+        if action == "D":
+            # 加倍只允许首两张 —— 策略违规时快速失败(fail loud),
+            # 而不是静默当成要牌处理(那样会掩盖策略 bug)。
+            if not two_card:
+                raise ValueError(
+                    f"策略 {strategy.name} 在非首两张时请求加倍"
+                )
             ranks.append(shoe.draw().rank)
             total, soft = hand_value(ranks)
             bet = 2.0 * bet
