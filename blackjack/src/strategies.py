@@ -35,6 +35,7 @@
 # 【Python 知识点: 类型注解与文档字符串的约定】
 # ctx: PlayContext —— 所有策略接收同一个"局面上下文"对象，
 # 引擎与策略的接口因此稳定。
+import math
 import random
 from dataclasses import dataclass
 from typing import Literal, Optional, Tuple
@@ -131,10 +132,11 @@ class BaseStrategy:
 
 class RandomStrategy(BaseStrategy):
     """
-    以固定概率随机选行动:
-      停牌 45%，要牌 45%，加倍 10%（仅首两张时才有加倍资格）。
-    这是"零信息决策"的对照组 —— 任何优于它的策略
-    都说明"信息 + 规则"在起作用。
+    以固定概率随机选行动（两档概率）:
+      • 首两张牌时: 停牌 45%，要牌 45%，加倍 10%
+      • 已经要过牌后（无加倍资格）: 要牌 55%，停牌 45%
+    （下注永远 1 单位。）这是"零信息决策"的对照组 ——
+    任何优于它的策略都说明"信息 + 规则"在起作用。
 
     【数学: 随机策略的期望为什么很差？】
     该策略在 16 vs 6 这种"应该停"的局面也有 45% 概率要牌，
@@ -277,8 +279,17 @@ class CountingStrategy(BaseStrategy):
         return self.running_count(ctx) / decks
 
     def _tc_floor(self, ctx: PlayContext) -> int:
-        """向下取整的真数（下注与索引决策都按整数真数）。"""
-        return int(self.true_count(ctx))
+        """真数向下取整（math.floor）。
+
+        【为什么必须用 floor 而不是 int()？】
+        int() 对负数是"向零截断": int(-0.5) = 0，等于把
+        真数 -0.5 当成 TC=0 —— 而索引行动的门槛是"TC ≥ 0"，
+        这样会在 tc∈(-1,0) 时错误触发 16v10 停牌（标准索引
+        语义要求 TC 严格达到 0 才停）。floor(-0.5) = -1 才是
+        "真数按整数档位向下归"的正确含义，也与 analysis.py
+        分箱（np.floor）的口径一致。
+        """
+        return math.floor(self.true_count(ctx))
 
     # --------------------------------------------------------
     # 决策与下注

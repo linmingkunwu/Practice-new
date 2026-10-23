@@ -466,8 +466,11 @@ def print_paired_result(result: Dict) -> None:
     print(f"    置换检验:    p = {result['p_perm']:.4f}")
     print(f"    差值 95% bootstrap CI: "
           f"({result['ci95_diff'][0]:+.5f}, {result['ci95_diff'][1]:+.5f})")
-    p_min = min(result["p_ttest"], result["p_perm"])
-    print(f"    →  {'差异显著 ✓' if p_min < 0.05 else '差异不显著(样本不足?)'}")
+    # 显著性判定以置换检验 p 为主（不依赖正态假设）；
+    # 不要用 min(p_ttest, p_perm) —— 取两个检验 p 的最小值
+    # 会放大一类错误概率，统计上不严谨。
+    p_main = result["p_perm"]
+    print(f"    →  {'差异显著 ✓' if p_main < 0.05 else '差异不显著(样本不足?)'}")
     print()
 
 

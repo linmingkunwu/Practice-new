@@ -638,7 +638,6 @@ def print_theoretical_report() -> None:
         line = f"  {label:<20}"
         line += f"停牌 {stand_ev(total, u):+8.4f}"
         line += f"   加倍 {double_ev(total, soft, u):+8.4f}   "
-        acts = [optimal_action(total, soft, True, u)]
         ev, act = decision_value(total, soft, True, u)
         line += f"最优 {act} ({ev:+.4f})"
         print(line)

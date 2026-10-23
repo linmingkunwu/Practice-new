@@ -93,7 +93,6 @@ ORANGE = "#DD8452"
 GREEN = "#55A868"
 RED = "#C44E52"
 INK = "#2B2B2B"
-MUTED = "#8C8C8C"
 
 
 # ============================================================
@@ -220,7 +219,7 @@ def chart_strategy_table(out_dir: str) -> str:
     for ax, mat, labels, title in (
             (ax1, hard, hard_lbl, "硬手 (首两张可加倍)"),
             (ax2, softm, soft_lbl, "软手 (A+点数, 首两张可加倍)")):
-        im = ax.imshow(mat, cmap=cmap, vmin=0, vmax=2, aspect="auto")
+        ax.imshow(mat, cmap=cmap, vmin=0, vmax=2, aspect="auto")
         ax.set_xticks(range(len(RANKS)))
         ax.set_xticklabels([("A" if r == "A" else r) for r in RANKS])
         ax.set_yticks(range(len(labels)))

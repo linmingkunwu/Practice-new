@@ -35,7 +35,7 @@
 # 与 dice-game 一样使用 Mersenne Twister 伪随机数生成器。
 # 注意: 本文件不再直接调用 random.randint，而是创建
 # random.Random(seed) 的"局部实例"——
-# 好处见 build_shoe() 中的详细讲解。
+# 好处见 build_shoe_cards() 中的详细讲解。
 import random
 
 # 【Python 知识点: typing 类型注解】
@@ -43,6 +43,16 @@ import random
 # List[Card]: Card 对象的列表
 # Optional[int]: int 或 None（表示"可以不传"）
 from typing import Dict, List, Optional, Tuple
+
+# 【Python 知识点: @dataclass 自动生成方法】
+# dataclasses 模块的 @dataclass 装饰器在下面 Card 类上做了演示:
+# 它根据带类型注解的字段自动生成 __init__ / __repr__ / __eq__ 等方法。
+# Card 用了两个定制（注意 dataclass 的 order 默认是 False，
+# 这里显式开启）:
+#   order=True: 实例可以排序/比较
+#   frozen=True: 字段只读 —— 牌发出去后点数花色不能变，
+#   用不可变对象表达"值对象"语义更安全。
+from dataclasses import dataclass
 
 
 # ============================================================
@@ -85,16 +95,6 @@ def rank_value(rank: str) -> int:
 # ============================================================
 # 数据结构 — 单张牌
 # ============================================================
-
-# 【Python 知识点: @dataclass 自动生成方法】
-# dice.py 中详细讲过 @dataclass：它根据带类型注解的字段
-# 自动生成 __init__ / __repr__ / __eq__ 等方法。
-# 这里加了两个定制:
-#   order=True (默认): 实例可以排序/比较
-#   frozen=True: 字段只读 —— 牌发出去后点数花色不能变，
-#   用不可变对象表达"值对象"语义更安全。
-from dataclasses import dataclass
-
 
 @dataclass(frozen=True, order=True)
 class Card:
@@ -265,6 +265,13 @@ class Shoe:
         # {r: 0 for r in RANKS} 等价于手动写 13 行。
         self.dealt_counts: Dict[str, int] = {r: 0 for r in RANKS}
 
+        # 【为什么需要洗牌计数器？】
+        # 若每次洗牌都用同一个 seed，同一只 Shoe 对象第二次、
+        # 第三次"重新洗牌"会得到与第一次完全相同的一副牌 ——
+        # 交互模式(固定 seed)下等于没有洗牌。计数器让每次洗牌
+        # 使用 seed + 0, seed + 1, ... —— 第一次仍与旧行为一致
+        # （保证既有实验的可复现结果不变），后续洗牌各不相同。
+        self._shuffle_count = 0
         self.reshuffle()
 
     def reshuffle(self) -> None:
@@ -274,8 +281,11 @@ class Shoe:
         检查 needs_reshuffle）。如果 draw() 内部偷偷自动洗牌，
         引擎"打满一靴就换靴"的判断就永远无法触发—— 会无限循环。
         """
-        self.cards = build_shoe_cards(self.deck_count, self.seed)
+        shoe_seed = (None if self.seed is None
+                     else self.seed + self._shuffle_count)
+        self.cards = build_shoe_cards(self.deck_count, shoe_seed)
         self.dealt_counts = {r: 0 for r in RANKS}
+        self._shuffle_count += 1
         # 切牌卡位置: 剩余牌数少于此值就触发洗牌
         self.cut_at = int(self.cut_fraction * CARDS_PER_DECK * self.deck_count)
 

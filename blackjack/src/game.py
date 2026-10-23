@@ -493,14 +493,9 @@ def monte_carlo_shoe(
 # 交互玩法 — 终端真人 21 点
 # ============================================================
 
-def _fmt_hand(cards: List[Card], hide_hole: bool = False) -> str:
-    """把 Card 列表格式化: "A♠ 7♦ (硬18)"；hide_hole 时首张显示 ??"""
-    parts = []
-    for i, c in enumerate(cards):
-        if hide_hole and i == 1:
-            parts.append("??")
-        else:
-            parts.append(str(c))
+def _fmt_hand(cards: List[Card]) -> str:
+    """把 Card 列表格式化: "A♠ 7♦ (硬18)"。"""
+    parts = [str(c) for c in cards]
     ranks = [c.rank for c in cards]
     total, soft = hand_value(ranks)
     label = "软" if soft else "硬"
