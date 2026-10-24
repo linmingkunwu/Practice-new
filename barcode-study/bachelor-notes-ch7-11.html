@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>本科分册 第7~11章 内容级考点清单</title>
+<style>
+  :root{
+    --ink:#1f2937;--muted:#64748b;--line:#cbd5e1;--teal:#0f766e;--teal-dark:#0b4f4a;
+    --teal-bg:#e8f5f2;--amber:#b45309;--amber-bg:#fff7e6;--red:#b91c1c;--red-bg:#fef2f2;
+    --blue:#1d4ed8;--blue-bg:#eef2ff;--violet:#6d28d9;--violet-bg:#f5f3ff;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;color:var(--ink);background:#e7ecf2;font-size:9pt;line-height:1.52;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .page{width:210mm;height:297mm;padding:5mm 8.5mm 3.5mm;background:#fff;margin:14px auto;box-shadow:0 3px 18px rgba(15,23,42,.16);overflow:hidden;display:flex;flex-direction:column;}
+  @media print{@page{size:A4;margin:0}body{background:#fff}.page{margin:0;box-shadow:none;page-break-after:always;height:297mm}.page:last-child{page-break-after:auto}}
+  .hero{border-radius:2.2mm;padding:2.4mm 3.6mm;color:#fff;background:linear-gradient(100deg,#0b3b3a,#0f766e 58%,#14958a);margin-bottom:1.6mm;display:flex;align-items:flex-end;justify-content:space-between;gap:3mm}
+  .hero h1{margin:0;font-size:14.6pt;line-height:1.2}
+  .hero p{margin:.8mm 0 0;font-size:7.2pt;color:#d9f6ef}
+  .hero p b{color:#fff}
+  .hero .badge{flex:0 0 auto;text-align:center;font-size:6.8pt;border:.35mm solid rgba(255,255,255,.55);border-radius:1.8mm;padding:1.6mm 2.2mm;color:#eafffb;line-height:1.5}
+  .hero .badge b{display:block;font-size:9pt}
+  .runhead{display:flex;align-items:center;gap:2mm;border-bottom:.45mm solid var(--teal);padding-bottom:.65mm;margin-bottom:1.3mm}
+  .runhead .pno{background:var(--teal);color:#fff;border-radius:1mm;padding:.15mm 1.8mm;font-weight:700;font-size:7.8pt;white-space:nowrap}
+  .runhead h2{margin:0;font-size:10.4pt;color:var(--teal-dark)}
+  .runhead .sub{margin-left:auto;color:var(--muted);font-size:6.8pt;white-space:nowrap}
+  .sec{margin-top:1.9mm}
+  .sec-h{display:flex;align-items:center;gap:1.8mm;border-bottom:.4mm solid var(--teal);padding-bottom:.45mm;margin-bottom:1mm}
+  .sec-h .tag{flex:0 0 auto;background:var(--teal);color:#fff;border-radius:1mm;padding:0 1.5mm;font-size:7pt;font-weight:700}
+  .sec-h h3{margin:0;font-size:9.6pt;color:var(--teal-dark)}
+  .sec-h .sub{margin-left:auto;color:var(--muted);font-size:6.7pt}
+  .cards{display:grid;gap:1.7mm}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .card{border:.35mm solid var(--line);border-left:.9mm solid var(--teal);border-radius:1.3mm;padding:1.2mm 1.7mm;background:#fcfefe}
+  .card h4{margin:0 0 .5mm;font-size:9.15pt;color:var(--teal-dark)}
+  .card p{margin:0}.card ul{margin:0;padding-left:3.4mm}.card li{margin:.2mm 0}
+  .card.amber{border-left-color:var(--amber);background:var(--amber-bg)}.card.amber h4{color:var(--amber)}
+  .card.blue{border-left-color:var(--blue);background:var(--blue-bg)}.card.blue h4{color:var(--blue)}
+  .card.violet{border-left-color:var(--violet);background:var(--violet-bg)}.card.violet h4{color:var(--violet)}
+  table.t{width:100%;border-collapse:collapse;font-size:7.9pt;line-height:1.42}
+  table.t th{background:var(--teal-bg);color:var(--teal-dark);font-weight:700;text-align:left;border:.3mm solid var(--line);padding:.55mm .9mm}
+  table.t td{border:.3mm solid var(--line);padding:.5mm .9mm;vertical-align:top}
+  table.t tr:nth-child(even) td{background:#f8fafc}
+  table.t td.k{background:var(--teal-bg)!important;color:var(--teal-dark);font-weight:700;white-space:nowrap}
+  .mono{font-family:Consolas,"Cascadia Mono",monospace;letter-spacing:.01em}
+  .em{color:var(--red);font-weight:700}
+  .tip{margin-top:.9mm;font-size:8.1pt;color:#334155}
+  .tip b{color:var(--teal-dark)}
+  .tip.warn{background:var(--amber-bg);border-left:.8mm solid var(--amber);border-radius:.8mm;padding:.8mm 1.4mm;font-size:7.8pt}
+  .tip.bad{background:var(--red-bg);border-left:.8mm solid var(--red);border-radius:.8mm;padding:.8mm 1.4mm;font-size:7.8pt}
+  .flowbar{display:flex;gap:.8mm;align-items:stretch;margin-top:.8mm}
+  .flowbar .cell{flex:1;border:.3mm solid var(--line);border-radius:1mm;padding:.8mm 1mm;background:#f8fafc;text-align:center;font-size:6.9pt;line-height:1.32}
+  .flowbar .cell b{display:block;font-family:Consolas,"Cascadia Mono",monospace;color:var(--teal-dark);font-size:7.1pt}
+  .flowbar .cell.hl{background:var(--teal-bg);border-color:#9fd4c9}
+  .flowbar .ar{flex:0 0 auto;display:flex;align-items:center;color:var(--teal);font-weight:700;font-size:9pt}
+  .foot{margin-top:auto;padding-top:.7mm;border-top:.3mm solid var(--line);color:var(--muted);font-size:6.3pt;display:flex;justify-content:space-between;gap:3mm}
+  .foot span:last-child{white-space:nowrap}
+  .pagefoot{max-width:1140px;margin:0 auto;padding:0 18px 26px;color:#94a3b8;font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- ==================== P1 第7章 ==================== -->
+<section class="page">
+  <div class="hero">
+    <div>
+      <h1>本科分册 第 7~11 章 · 内容级考点清单</h1>
+      <p>依据：本科分册·第二版扫描版原文（393 页，ISBN 978-7-302-48504-9）逐页 OCR + 原文核对。标注页码为<b>书上页码</b>；扫描 PDF 页码 = 书上页码 + 18。</p>
+    </div>
+    <div class="badge"><b>A4 × 6</b>第 7~11 章<br>考点 + 页码索引</div>
+  </div>
+
+  <div class="runhead"><span class="pno">1</span><h2>第 7 章 制造业生产线上的条码应用</h2><span class="sub">教材 P193~233</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">7.1</span><h3>内部物流、个性化定制、柔性制造</h3><span class="sub">名解 / 简答</span></div>
+    <div class="cards g3">
+      <div class="card">
+        <h4>生产物流（P193）</h4>
+        <p>企业在生产工艺中的物流活动：原材料、零部件、半成品按工艺流程依次流过，最终成为成品送入成品库暂存。它是企业物流的<b>核心部分</b>，与生产工艺伴生。</p>
+      </div>
+      <div class="card">
+        <h4>个性化定制（P194~196）</h4>
+        <p>以需求为中心、多品种小批量；JIT/零库存；物料、半成品、成品最短时间通过各环节直达客户。案例：海尔（中心城市 8h、区域 24h、全国 4 天配送）、IBM 个性化定制。</p>
+      </div>
+      <div class="card">
+        <h4>柔性制造 FMS（P197~199）</h4>
+        <p>由数控加工设备、物料运储装置、计算机控制系统组成的自动化制造系统；能按制造任务/生产环境变化迅速调整，适合多品种中小批量。柔性包括机器、工艺、产品、生产能力柔性；核心还有供应链的敏捷反应。</p>
+      </div>
+    </div>
+    <div class="cards g2" style="margin-top:1.4mm">
+      <div class="card">
+        <h4>产品追溯与缺陷召回（P196、P207）</h4>
+        <p>在各生产线上线工位用针式/激光打标二维码，关键工位扫描，经 PLC 等写入数据库；按批次/工序关联生产时间、批号、质检、原辅料信息，实现正向追踪 + 反向溯源。缺陷召回靠 <b>MES</b>（制造执行系统）按条码批次定位问题范围。</p>
+      </div>
+      <div class="card amber">
+        <h4>MES（P199）</h4>
+        <p>制造执行系统：用条码/PDA/PLC/传感器/RFID/LED 看板等，对原材料上线到成品入库实时采集、控制和监控；上接 ERP 的工单/BOM/库存，下接控制层，实时反馈生产/质量/设备状态。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">7.2</span><h3>汽车生产线追溯案例（P199~207）</h3><span class="sub">案例题</span></div>
+    <div class="tip">冲压（批次管理）→ 机加（缸体/缸盖/曲轴等关键件批次追踪）→ 焊装（焊接缺陷/精度）→ 喷涂（工艺参数/车身缺陷）→ 总装（100 多道工序、力矩/加注、VIN 关联）。系统采用 <b>B/S 三层架构</b>（表示层/中间层/数据层），以底盘号为关键字，条码 + 激光扫描 + PLC，实现防差错、仓库管理、SPC 统计过程分析、返修管理、设备管理、成本控制；召回时可按条码定位问题车辆/批次。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">7.3</span><h3>追溯系统中的编码技术：中药材案例（P207~211）</h3><span class="sub">编码方案题</span></div>
+    <table class="t">
+      <tr><th style="width:18%">编码对象</th><th>组成 / 要点</th><th style="width:22%">条码符号</th></tr>
+      <tr><td class="k">供应商厂商识别代码</td><td>中国物品编码中心分配的 8 位数字</td><td>—</td></tr>
+      <tr><td class="k">农田代码</td><td>13 位数字（厂商识别代码 + 位置参考 + 校验）；表示物理位置时与 <b>AI(414)</b> 一起用</td><td>GS1-128</td></tr>
+      <tr><td class="k">定量包装药材零售码</td><td>供应商厂商识别代码 + 药材品种项目代码 + 校验码，共 13 位</td><td>EAN-13</td></tr>
+      <tr><td class="k">原料批号</td><td><b>AI(414)</b> + 农田代码 13 位 + <b>AI(10)</b> + 采收时间 8 位</td><td>GS1-128</td></tr>
+      <tr><td class="k">成品批号</td><td><b>AI(01)</b> + 产品标识代码 GTIN（14 位）+ <b>AI(10)</b> + 入成品库时间 8 位</td><td>GS1-128</td></tr>
+    </table>
+    <div class="tip"><b>追溯编码方案 3 步：</b>① 确定生产流程中要追溯的环节；② 为每一环节编制唯一编码（必须用 GS1 标准，如 GTIN-13/14、位置码等）；③ 选择条码符号（EAN-13、GS1-128、ITF-14 等）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">7.4</span><h3>零部件标识技术（P211~223）</h3><span class="sub">选择 / 特点</span></div>
+    <table class="t">
+      <tr><th style="width:14%">类型</th><th>原理 / 特点</th><th style="width:32%">典型应用</th></tr>
+      <tr><td class="k">金属条码</td><td>激光蚀刻/打标在金属铭牌上；激光波长常见 1064 nm；耐高温、耐磨、耐腐蚀，可户外长期使用；读取距离远，抗电磁干扰。附着：背胶/嵌入/穿孔吊牌</td><td>固定资产、仓储货架、仪器仪表、化工/钢铁、汽车/机械、火车/轮船</td></tr>
+      <tr><td class="k">陶瓷条码</td><td>耐高温、耐腐蚀、不易磨损；适合长期重复使用、恶劣/高温环境</td><td>液化石油气钢瓶“一瓶一码”、气瓶身份标识</td></tr>
+      <tr><td class="k">隐形条码</td><td>覆盖式（膜/涂层）、光化学处理、隐形油墨（荧光/热致变色/磷光）、纸质隐形、金属隐形；人眼难辨、防伪好</td><td>包装防伪、证卡、高价值商品</td></tr>
+      <tr><td class="k">银色条码</td><td>铝箔表面机械打毛，形成凹凸；利用镜面反射与漫反射的差异提高条/空反差</td><td>铝制包装、易拉罐等金属载体</td></tr>
+      <tr><td class="k">载体/耗材</td><td>纸张（铜版纸、白板纸、瓦楞纸）、金属（铝）、塑料（PET/PVC）；不干胶标签、耐高温标签；碳带、背胶</td><td>铜版纸用于超市/库存/服装吊牌；PET 用于电池/显示器/空调；PVC 用于珠宝/钟表；热敏纸用于冷库货架</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">7.5~7.6</span><h3>ERP 集成与红领 C2M 案例</h3><span class="sub">简答 / 案例</span></div>
+    <div class="cards g2">
+      <div class="card"><h4>ERP 中的条码集成（P227）</h4><p>条码采集实时进入 ERP：物料主数据、库存、生产订单、质量记录；解决“账实不符、手工录入慢/错”，实现物料/生产/仓库/销售/售后/质量的信息管理。</p></div>
+      <div class="card violet"><h4>红领 C2M（P229~232）</h4><p>客户量体数据 + 个性化要求 → RCMTM 平台 → CAD 自动打版/拆解/裁剪 → 布料挂电子标签进入吊挂流水线；工序标签化、数据采集实时化、用数据经营客户。核心：<b>数据驱动</b>，把传统生产线与信息化深度融合，用流水线生产个性化产品。</p></div>
+    </div>
+  </div>
+
+  <div class="foot"><span><b>本章必背：</b>生产物流定义 · FMS 组成/柔性 · 产品追溯与 MES 召回 · 中药材追溯编码（AI 414/10/01） · 金属/陶瓷/隐形/银色条码 · 红领 C2M。</span><span class="mono">ch7-11 notes p.1</span></div>
+</section>
+
+<!-- ==================== P2 第8章 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">2</span><h2>第 8 章 GS1 与供应链管理</h2><span class="sub">教材 P234~280</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">8.1</span><h3>供应链与供应链管理</h3><span class="sub">名词解释高频</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>供应链（P234）</h4>
+        <p>供应链是一个<b>业务过程</b>：用一条链连接制造商、零售商及供应商，实现产品或服务的制造、传输，目标是通过多个组织间业务处理的合作，把产品从生产线顺利送到消费者手中。</p>
+      </div>
+      <div class="card">
+        <h4>供应链管理 SCM（P234~235）</h4>
+        <p>订单生成、订单执行、订单完成、产品/服务/信息分发过程的<b>合作</b>；供应链内相互依赖形成“扩展的企业”；原材料供应商、流通渠道伙伴、消费者都是主要角色。</p>
+      </div>
+    </div>
+    <div class="cards g2" style="margin-top:1.4mm">
+      <div class="card amber">
+        <h4>push 模式 vs pull 模式（P239~242）</h4>
+        <p><b>push（推动式）</b>：以制造商为核心，按预测生产后逐级推向市场。<br><b>pull（拉动式/需求驱动）</b>：以消费者需求为起点，零售 POS 数据→配送仓库→制造商→供应商，按需补货/生产。<br>pull 的 4 步：迅速准确获得需求 → 以最低成本满足需求 → 沿供应链做决策 → 把成品送到消费者并收款。</p>
+      </div>
+      <div class="card">
+        <h4>现代供应链 7 个基本特征（P242~243）</h4>
+        <p><b>增值性、竞争性、复杂性、动态性、市场性、交叉性、面向用户需求</b>。现代供应链是网链结构，由客户需求拉动，具有物流、商流、信息流、资金流 4 种表现形态。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">8.2</span><h3>GS1 在供应链中的四个作用（P244~245）</h3><span class="sub">简答</span></div>
+    <table class="t">
+      <tr><th style="width:18%">作用</th><th>要点</th></tr>
+      <tr><td class="k">信息编码标准化</td><td>零售终端：EAN/UPC-13；储运/包装：EAN/UPC-13、EAN-14；物流：SSCC、位置码（GLN）、应用标识符（AI）；制造：店内码。</td></tr>
+      <tr><td class="k">信息采集自动化</td><td>条码采集器（一维/二维）、RFID 电子标签、传感器；在零售、配送、运输、生产线各环节自动实时采集。</td></tr>
+      <tr><td class="k">信息共享实时化</td><td>标准信息格式 + 标准通信协议（ebXML、GDS），供应链各环节数据快速传递共享，实现业务协同。</td></tr>
+      <tr><td class="k">供应链物流管理</td><td>包装、运输、仓储、加工、配送全过程；条码解决数据录入/采集“瓶颈”，支撑物料、生产、仓库、销售、售后、质量管理。</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">8.3</span><h3>QR 快速反应与 ECR 有效客户响应</h3><span class="sub">名解 + 简答</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>QR（P248~250）</h4>
+        <p>QR（quick response，快速反应）：零售商与供应商共享销售信息，缩短补货周期、降低库存。成功 5 条件：改变经营方式/意识；开发应用现代信息处理技术（条码、POS、EOS、EDI、电子支付、VMI、CRP）；建立战略伙伴关系；改变商业信息保密做法、共享信息；供应商缩短生产周期、降低库存。</p>
+      </div>
+      <div class="card">
+        <h4>ECR（P250~251）</h4>
+        <p>ECR（efficient consumer response，有效客户响应）：以消费者为中心，生产商、批发商、零售商协作，利用信息技术提高商品供应效率、降低供应链成本。四要素：<b>高效产品引进、高效商品存储、有效促销、高效补货</b>。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">8.4~8.5</span><h3>GDSN 与供应链协同商务</h3><span class="sub">名解 / 流程</span></div>
+    <div class="cards g2">
+      <div class="card blue">
+        <h4>GDSN（P253~254）</h4>
+        <p>全球数据同步网络：数据池 + 全球注册中心基于互联网组成；贸易伙伴通过数据池发布/订阅<b>主数据</b>（GTIN、属性、包装等），保证数据一致。流程：制造商→数据池→全球注册中心；零售商通过数据池查询/订阅；供应商和零售商不能直接连全球注册中心，必须通过数据池接入。</p>
+      </div>
+      <div class="card blue">
+        <h4>供应链协同商务（P255~258）</h4>
+        <p>两个或两个以上企业为满足目标市场需求，通过协议/联合组织结成的网络式、以销定产的供求模式。参与主体：上下游企业（原料供应商到零售商）、第三方物流、区域平台/中央平台；协同信息分<b>概要信息</b>（品名/数量/重量）和<b>详细信息</b>（价格/折扣等）。</p>
+      </div>
+    </div>
+    <div class="tip"><b>案例：</b>Liverpool（墨西哥零售商）用 EPC/RFID 提升供应链；南京微创 GS1/UDI（医疗器械唯一标识）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">8.6~8.7</span><h3>全球商务倡议、协同商务与本章习题</h3><span class="sub">可能按课后题出</span></div>
+    <div class="tip">
+      <b>协同商务：</b>企业间共享信息、协同计划与执行；特征/内容/模式/系统组成（教材 P260~270）。<br>
+      <b>课后题（P280）：</b>名词解释——供应链、QR、ECR、JIT、CPFR、VMI、POS；问答——什么是供应链管理？GS1 在供应链协同中的作用？条码技术在 ECR 实施中的作用？标准化编码体系在准时采购（JIT）策略中的作用？
+    </div>
+  </div>
+
+  <div class="foot"><span><b>本章必背：</b>供应链/SCM 定义 · push vs pull · 7 特征 · GS1 四作用 · QR 五条件 · ECR 四要素 · GDSN 数据池 · 协同商务。</span><span class="mono">ch7-11 notes p.2</span></div>
+</section>
+
+<!-- ==================== P3 第9章 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">3</span><h2>第 9 章 GS1 与物联网应用</h2><span class="sub">教材 P282~315</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">9.1</span><h3>物联网定义、应用与三种模式</h3><span class="sub">名解 / 简答</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>物联网定义（P282）</h4>
+        <p>通过 RFID、红外感应器、GPS、激光扫描器等信息传感设备，按约定协议把任何物品与互联网连接，进行信息交换和通信，实现<b>智能化识别、定位、跟踪、监控和管理</b>的网络。狭义：物到物；广义：信息空间与物理空间融合。</p>
+      </div>
+      <div class="card">
+        <h4>“物”的条件（P282~283）</h4>
+        <p>要有信息接收器、数据传输通路、存储功能、CPU、操作系统、应用程序、数据发送器、遵循通信协议、<b>在世界网络中有可被识别的唯一编号</b>（重点）。</p>
+      </div>
+      <div class="card amber">
+        <h4>三种应用模式（P286）</h4>
+        <p>① <b>对象的智能标签</b>（NFC/二维码/RFID 标识对象）；② <b>环境监控和对象跟踪</b>（传感器网络/GPS/摄像头）；③ <b>对象的智能控制</b>（根据数据决策、改变对象行为）。</p>
+      </div>
+      <div class="card">
+        <h4>物联网 vs 互联网（P283~284）</h4>
+        <p>物联网核心和基础仍是互联网，是互联网的延伸扩展；用户端延伸到物与物之间。解决 T2T（物对物）、H2T（人对物）、H2H（人对人）互联；M2M（机对机）。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">9.2</span><h3>EPC、RFID、GDS：物联网三大技术</h3><span class="sub">名解 + 原理</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>EPC（P287~290）</h4>
+        <p>电子产品代码，对供应链对象（物品、货箱、货盘、位置等）全球唯一标识，存放在 RFID 标签上；针对<b>单品</b>，是 GTIN 的扩充。5 种编码体系：<b>SGTIN、SGLN、SSCC、GRAI、GIAI</b>。96 位 EPC 结构：标头 + 厂商识别代码 + 对象分类代码 + 序列号。特性：科学性、兼容性、全面性、合理性、国际性、无歧视性；原则：唯一性、简单性、可扩展性、保密与安全性。</p>
+      </div>
+      <div class="card">
+        <h4>RFID（P290~292）</h4>
+        <p>射频识别，非接触自动识别。组成：<b>标签（耦合元件+芯片）、阅读器、天线</b>。原理：阅读器发射射频信号→标签感应取电→发送自身编码→阅读器接收/解调/解码→后台处理。特点：非接触、可识别高速运动物体、可同时识别多个标签、适应恶劣环境。</p>
+      </div>
+      <div class="card blue">
+        <h4>GDS / GDSN（P293~296）</h4>
+        <p>全球数据同步：利用计算机网络保持供应链贸易伙伴信息一致。GDSN = 全球注册中心 + 多个数据池；制造商向数据池发布贸易项信息，数据池向注册中心注册基本信息；零售商通过数据池查询/订阅。GDSN 关键特性：通过数据池接入；商品条目用 <b>GTIN + GLN + 目标市场</b> 唯一标识；企业用 GLN 标识。</p>
+      </div>
+      <div class="card">
+        <h4>EPC 与条码的关系</h4>
+        <p>EPC 编码以 RFID 为载体，实现自动采集；EPC 与 GTIN 兼容，GTIN、SSCC、GLN 等可转换到 EPC；EPC 是“钥匙”，产品信息保存在 EPCglobal 网络/EPCIS 中。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">9.3</span><h3>物联网标识体系与 Ecode（P296~301）</h3><span class="sub">概念 / 结构</span></div>
+    <div class="tip"><b>Ecode：</b>我国物联网统一标识；由 <b>版本 V、编码体系标识 NSI、主码 MD</b> 等组成，最大总长度 <b>256 位</b>；有二进制、十进制、字母数字型、Unicode 等类型；V 和 NSI 决定 MD 的结构和长度。Ecode 可存储在一维条码、二维条码、射频标签、NFC 标签中，并有统一的注册与管理规则。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">9.4~9.6</span><h3>物联网数据、处理模型与应用</h3><span class="sub">简答 / 选择</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>数据 6 特点（P301~302）</h4>
+        <p><b>数据量大、类型复杂、异构性、高度动态性、时空特性、不完整性</b>。</p>
+      </div>
+      <div class="card">
+        <h4>数据处理模型 4 层（P302~305）</h4>
+        <p><b>感知控制层</b>（传感器/RFID/单片机采集）→ <b>网络层</b>（无线传感网/现场总线/公网专网传输）→ <b>平台服务层</b>（存储、建模、挖掘、云计算/大数据）→ <b>应用服务层</b>（C/S、B/S、M2M、云计算等）。</p>
+      </div>
+    </div>
+    <div class="tip"><b>应用场景（P308~313）：</b>智能家居、远程医疗、老人关怀、药品安全监控、零售/物流/供应链、食品追踪、农业育种；<b>国家物联网标识管理与公共服务平台</b>（P313）。<br><b>课后题（P315）：</b>物联网与互联网区别联系；EPC 编码原理；RFID 在物联网中的应用；Ecode 如何统一不同编码体系；以食品安全追溯为例说明 Ecode 应用。</div>
+  </div>
+
+  <div class="foot"><span><b>本章必背：</b>物联网定义/物条件 · 三种应用模式 · EPC 5 类/96 位结构 · RFID 三组成 · GDSN 三要素 · Ecode（V+NSI+MD，≤256 位） · 数据 6 特点/4 层模型。</span><span class="mono">ch7-11 notes p.3</span></div>
+</section>
+
+<!-- ==================== P4 第10章 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">4</span><h2>第 10 章 GS1 与电子商务</h2><span class="sub">教材 P316~350</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">10.1</span><h3>电子商务中的条码应用</h3><span class="sub">简答 / 案例</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>源数据与两码（P316~319）</h4>
+        <p><b>源数据</b>：以商品条码为关键字，由生产厂商自主提供的商品生产源头数据，来源可靠、真实、质量高。中国物品编码中心 + 阿里巴巴推动 GS1 标准、商品源数据、扫码购物。<b>两码</b>：组织机构代码（企业信用/实名）+ 商品条码（产品追溯），用于电商信用与质量追溯。</p>
+      </div>
+      <div class="card">
+        <h4>条码在电商中的作用（P318）</h4>
+        <p>统一编码身份标识，线上线下一致；商品、包装箱、仓库、订单、参与方可用商品条码/GLN/箱码标识；支撑电商物流自动化、可视化；构筑可信交易平台、产品追溯。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">10.2</span><h3>GS1 DataMatrix 与汉信码</h3><span class="sub">选择 / 特点</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>GS1 DataMatrix（P320~327）</h4>
+        <p>矩阵式二维条码；GS1 采用其 <b>ECC 200</b> 标准版（ISO/IEC 16022）；有 “L” 形寻像图形，Reed-Solomon 纠错；可编码 GS1 数据结构（FNC1），码制标识符 <b>]d2</b>；适合小件、DPM 直接部件标印、医疗等；需二维成像式识读器。</p>
+      </div>
+      <div class="card">
+        <h4>汉信码（P327~333）</h4>
+        <p>我国自主知识产权二维码，GB/T 21049—2007；特点：<b>专利免费</b>、汉字编码能力强（支持 GB 18030）、抗污损/抗畸变、识读速度快；应用：图书、移动商务、信息安全、产品追溯、增值税发票等。</p>
+      </div>
+    </div>
+    <div class="tip"><b>矩阵式二维条码：</b>在矩形空间用黑白像素点阵编码（点出现=1，不出现=0）；常见 Data Matrix、QR Code、汉信码。QR Code 由 Denso-Wave 1994 年发明，开放授权，是手机二维码主流。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">10.3~10.4</span><h3>二维码入口与 O2O 模式</h3><span class="sub">名解 / 简答</span></div>
+    <div class="cards g3">
+      <div class="card">
+        <h4>二维码入口（P333~336）</h4>
+        <p>从域名、搜索引擎到 APP/二维码；二维码用于 APP 下载、标签类业务（拍码溯源/互动）、凭证类业务（电子票/优惠券）。</p>
+      </div>
+      <div class="card amber">
+        <h4>O2O（P338~343）</h4>
+        <p>Online to Offline：线上筛选/下单/结算，线下消费/服务；参与者：商家、消费者、O2O 平台；特征：本地化、社会化、服务化；二维码用于营销宣传、支付、凭证/入口。</p>
+      </div>
+      <div class="card">
+        <h4>O2O 瓶颈与改进（P343~345）</h4>
+        <p>瓶颈：客户认知度、终端问题、编码标准、安全问题、平台自身问题；改进：营销宣传、普及终端、统一编码、行业监管。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">10.5~10.6</span><h3>二维码支付与快递跟踪</h3><span class="sub">案例 / 简答</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>二维码支付（P345~347）</h4>
+        <p>基于账户体系的无线支付：商家把账号、价格等生成二维码；用户扫码完成支付结算。案例：建行“龙支付”（钱包/二维码/全卡付/云闪付等）。问题：恶意网址/病毒、信息泄露、监管与安全标准。</p>
+      </div>
+      <div class="card">
+        <h4>快递跟踪（P347~349）</h4>
+        <p>快递员配备无线手持终端“<b>巴枪</b>”，每个环节扫描快件条码，系统/消费者可实时跟踪；车辆装 GPS，分拣中心实时监控；RFID 可批量读取包裹，标签可改写、可转发。</p>
+      </div>
+    </div>
+    <div class="tip"><b>课后题（P350）：</b>说明 O2O 中二维码的应用；分析手机二维码问题、说明推广汉信码的重要性；简述二维码“主读/被读”；二维码支付的法律规定；以一次网上购物说明各环节条码应用。</div>
+  </div>
+
+  <div class="foot"><span><b>本章必背：</b>源数据/两码 · DataMatrix（ECC200/]d2） · 汉信码 4 特点 · 二维码入口 · O2O 定义/参与者/瓶颈 · 二维码支付 · 巴枪跟踪。</span><span class="mono">ch7-11 notes p.4</span></div>
+</section>
+
+<!-- ==================== P5 第11章 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">5</span><h2>第 11 章 条码技术的未来发展与应用趋势</h2><span class="sub">教材 P351~372</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">11.1</span><h3>市场状况与应用层次</h3><span class="sub">选择 / 简答</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>三类识读设备（P351~354）</h4>
+        <p>① <b>手持式条码扫描器</b>（需求量最大；激光/线性影像/面阵影像，面阵影像增长最快）；② <b>固定式 POS 扫描器</b>（大型双窗/立式/小型桌式）；③ <b>固定式工业类扫描器</b>（增长最快；工业激光 vs 工业影像）。</p>
+      </div>
+      <div class="card">
+        <h4>应用三阶段（P354）</h4>
+        <p>第一阶段：<b>自动结算</b>；第二阶段：<b>企业内部管理</b>；第三阶段：<b>电子商务、物联网、全球数据同步</b>。我国处于第二阶段向第三阶段过渡。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">11.2</span><h3>主要应用领域</h3><span class="sub">简答 / 举例</span></div>
+    <div class="cards g3">
+      <div class="card"><h4>零售/物流/仓储</h4><p>POS 结算、库存管理、分拣配送；手持/固定式扫描器。</p></div>
+      <div class="card"><h4>产品溯源</h4><p>农产品/食品/医药质量溯源；条码成本低、操作便捷、信息量大。</p></div>
+      <div class="card"><h4>工业制造</h4><p>《中国制造 2025》；物料调配、零件识别分拣、动态生产控制、检测追踪；机器视觉。</p></div>
+      <div class="card"><h4>医疗健康</h4><p>药品、标本、设备、医护人员、病人身份标识；HIS/CIS 信息交互。</p></div>
+      <div class="card"><h4>O2O 运营</h4><p>二维码连接线上线下；扫码支付、营销、凭证；影像式扫描器需求增长。</p></div>
+      <div class="card"><h4>其他</h4><p>火车票、机场、彩票、税务、现场服务等。</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">11.3</span><h3>未来趋势（P360~364）</h3><span class="sub">简答</span></div>
+    <div class="tip"><b>四个趋势：</b>① 影像扫描设备逐步取代激光扫描设备（拍照式捕获整码、抗强光、无机械结构、耐摔、可读屏幕码）；② 条码与 RFID 等其他自动识别技术融合；③ 亚太市场成为前沿；④ 物联网成为推动条码设备发展的主要动力（条码识读设备属于感知层）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">11.4</span><h3>三维条码（P364~366）</h3><span class="sub">名解 / 特点</span></div>
+    <div class="cards g2">
+      <div class="card violet">
+        <h4>概念与特点</h4>
+        <p>三维条码（3D Barcode/多维条码/万维条码）：在二维条码基础上增加颜色、灰度、层厚等维度；信息容量更大，可表示图像/音频/视频等；防伪性强。2014 年中国三维码问世，具有自主知识产权。</p>
+      </div>
+      <div class="card amber">
+        <h4>缺点与应用</h4>
+        <p>缺点：对破损/色差敏感，一个像素损坏或色差可能导致信息丢失/无法读取。<br>应用：证、章、卡、照、物品追踪、防伪溯源、智慧城市等。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">11.5</span><h3>工业 4.0 与条码技术（P366~372）</h3><span class="sub">简答 / 案例</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>工业 4.0 要点</h4>
+        <p>2011 年汉诺威工业博览会提出；德国《高技术战略 2020》十大未来项目之一；核心：<b>CPS（信息物理系统）</b>，软件、传感器、通信系统集成；两大主题：<b>智能工厂、智能生产</b>；三大主题（含智能物流）；关键技术：ICT、M2M、大数据、与 ERP/PLM/SCM 联动。</p>
+      </div>
+      <div class="card">
+        <h4>条码/二维码/RFID 的作用</h4>
+        <p>产品标识与跟踪：条码/二维码低成本、高可靠、易用（DPM 直接零部件标刻）；用于 ERP、MES、SCADA；固定式工业扫描器自动读取；Kiva 机器人扫描地面条码搬运货架；UHF RFID 识别距离远、速度快、可批量、适应恶劣环境。</p>
+      </div>
+    </div>
+    <div class="tip"><b>课后题（P372）：</b>“工业 4.0”给条码技术提供了哪些机遇？简述 RFID 在工业自动化中的应用；简述三维条码的特点。</div>
+  </div>
+
+  <div class="foot"><span><b>本章必背：</b>三类识读设备 · 应用三阶段 · 四个趋势 · 三维条码优缺点 · 工业 4.0（CPS/智能工厂/智能生产/智能物流） · 条码/RFID 的角色。</span><span class="mono">ch7-11 notes p.5</span></div>
+</section>
+
+<!-- ==================== P6 小结/习题/索引 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">6</span><h2>第 7~11 章：每章一句话小结 + 课后题 + 开卷索引</h2><span class="sub">考前 10 分钟看这页</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="tag">小结</span><h3>每章一句话 + 可能题型</h3><span class="sub">按老师课后题出题概率高</span></div>
+    <table class="t">
+      <tr><th style="width:13%">章节</th><th style="width:39%">一句话小结</th><th>课后题 / 可能题型</th><th class="c" style="width:9%">页码</th></tr>
+      <tr><td class="k">第7章</td><td>从产品质量控制与跟踪出发，在生产关键环节打条码，扫码把过程信息存数据库，实现产品追溯；红领案例说明编码/RFID/自动采集在大规模个性化定制中的应用。</td><td>红领 C2M 难点/核心技术/条码应用；汽车召回如何定位问题车辆；生产物流/FMS/MES 名解</td><td class="c">P193~233</td></tr>
+      <tr><td class="k">第8章</td><td>从案例讲供应链和 SCM 含义、push/pull 两种模式，重点讲 pull 模式；企业要通过信息共享与伙伴协作，GS1 标准化编码是基础。</td><td>名解：供应链、QR、ECR、JIT、CPFR、VMI、POS；问答：SCM 定义、GS1 作用、条码在 ECR 中的作用、标准化编码在 JIT 采购中的作用</td><td class="c">P234~280</td></tr>
+      <tr><td class="k">第9章</td><td>从物联网概念出发，讲“物”的编码重要性；重点 EPC + RFID；最后 Ecode 与物联网标识体系/平台。</td><td>物联网 vs 互联网；EPC 编码原理；RFID 应用；Ecode 统一编码体系；食品安全追溯应用</td><td class="c">P282~315</td></tr>
+      <tr><td class="k">第10章</td><td>系统介绍条码/二维码在电子商务中的应用：商品信息采集、订单、支付、物流跟踪；重点二维码在互联网入口、O2O、手机支付、快递跟踪中的应用。</td><td>O2O 中二维码应用；手机二维码问题/推广汉信码；主读与被读；二维码支付法规；网上购物全流程条码应用</td><td class="c">P316~350</td></tr>
+      <tr><td class="k">第11章</td><td>条码应用现状与趋势；物联网/工业 4.0 带来新空间；三维条码是我国自主知识产权产品，优点多。</td><td>工业 4.0 给条码的机遇；RFID 在工业自动化的应用；三维条码特点</td><td class="c">P351~372</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">名词</span><h3>高频名词解释（按“定义 + 组成/特点 + 作用”答）</h3><span class="sub">开卷直接抄</span></div>
+    <div class="cards g3">
+      <div class="card"><h4>生产物流 / FMS</h4><p>生产物流：企业在生产工艺中的物流活动。FMS：数控设备+物料运储+计算机控制，能迅速调整、适合多品种中小批量的自动化制造系统。</p></div>
+      <div class="card"><h4>供应链 / SCM</h4><p>供应链：连接供应商—制造商—零售商—消费者的业务过程。SCM：订单生成/执行/完成及产品/服务/信息分发过程的合作。</p></div>
+      <div class="card"><h4>QR / ECR</h4><p>QR：快速反应，共享销售信息、缩短补货周期。ECR：有效客户响应，以消费者为中心，供应链协作降本增效。</p></div>
+      <div class="card"><h4>GDSN / 协同商务</h4><p>GDSN：数据池+全球注册中心，主数据同步。协同商务：企业间共享信息、协同计划与执行。</p></div>
+      <div class="card"><h4>物联网 / EPC / RFID</h4><p>物联网：物品与互联网连接，实现识别/定位/跟踪/监控/管理。EPC：单品唯一电子代码。RFID：射频非接触自动识别。</p></div>
+      <div class="card"><h4>Ecode / 三维条码</h4><p>Ecode：我国物联网统一标识（V+NSI+MD，≤256 位）。三维条码：在二维基础上加颜色/灰度/层厚等维度，容量大、防伪强。</p></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="tag">索引</span><h3>开卷翻书索引（书上页码）</h3><span class="sub">PDF 页码 = 书上页码 + 18</span></div>
+    <table class="t">
+      <tr><th style="width:24%">关键词</th><th class="c">页码</th><th style="width:24%">关键词</th><th class="c">页码</th><th style="width:24%">关键词</th><th class="c">页码</th></tr>
+      <tr><td class="k">生产物流/内部物流</td><td class="c">193</td><td class="k">汽车追溯案例</td><td class="c">199</td><td class="k">中药材追溯编码</td><td class="c">207</td></tr>
+      <tr><td class="k">金属/陶瓷/隐形/银色条码</td><td class="c">211~219</td><td class="k">红领 C2M</td><td class="c">229</td><td class="k">供应链/SCM</td><td class="c">234</td></tr>
+      <tr><td class="k">QR/ECR</td><td class="c">248~251</td><td class="k">GDSN</td><td class="c">253</td><td class="k">协同商务</td><td class="c">255</td></tr>
+      <tr><td class="k">物联网/EPC/RFID</td><td class="c">282~293</td><td class="k">Ecode/标识体系</td><td class="c">296~301</td><td class="k">数据 6 特点/4 层</td><td class="c">301~305</td></tr>
+      <tr><td class="k">电商/源数据/两码</td><td class="c">316~319</td><td class="k">GS1 DataMatrix/汉信码</td><td class="c">320~333</td><td class="k">O2O/二维码支付</td><td class="c">338~347</td></tr>
+      <tr><td class="k">快递跟踪</td><td class="c">347</td><td class="k">市场/应用领域</td><td class="c">351~360</td><td class="k">三维条码/工业4.0</td><td class="c">364~372</td></tr>
+    </table>
+    <div class="tip warn"><b>开卷技巧：</b>先看题目关键词，按上表翻到书上页；扫描版 PDF 页码 = 书上页码 + 18（例：书上 P248 → PDF 第 266 页）。答简答时用“定义 + 组成/特点 + 作用/例子”三句；案例题先写“用了什么编码/条码，解决什么问题，带来什么效果”。</div>
+  </div>
+
+  <div class="foot"><span><b>说明：</b>本清单依据本科分册·第二版扫描版原文 OCR + 关键页原文核对整理；第 7~11 章已逐章覆盖。具体表述/分值以老师课件为准。</span><span class="mono">ch7-11 notes p.6</span></div>
+</section>
+
+<script>(function(){if(/[?&]debug=1/.test(location.search)){var i=[];document.querySelectorAll(".page").forEach(function(p,n){p.style.height="auto";p.style.overflow="visible";i.push("p"+(n+1)+"="+p.offsetHeight);});document.title=i.join(" | ");}})();</script></body>
+</html>
+
+
+

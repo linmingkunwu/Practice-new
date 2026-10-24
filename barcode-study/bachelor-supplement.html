@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>《条码技术与应用》本科分册 补差速记（对照高职高专分册·第二版）</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#64748b; --line:#cbd5e1; --teal:#0f766e; --teal-dark:#0b4f4a;
+    --teal-bg:#e8f5f2; --amber:#b45309; --amber-bg:#fff7e6; --red:#b91c1c; --red-bg:#fef2f2;
+    --blue:#1d4ed8; --blue-bg:#eef2ff; --violet:#6d28d9; --violet-bg:#f5f3ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+    color:var(--ink); background:#e7ecf2; font-size:9pt; line-height:1.52;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:210mm; height:297mm; padding:5mm 9mm 3.5mm; background:#fff;
+    margin:14px auto; box-shadow:0 3px 18px rgba(15,23,42,.16); overflow:hidden;
+    position:relative; display:flex; flex-direction:column;
+  }
+  @media print{
+    @page{ size:A4; margin:0; }
+    body{ background:#fff; }
+    .page{ margin:0; box-shadow:none; page-break-after:always; height:297mm; }
+    .page:last-child{ page-break-after:auto; }
+    .no-print{ display:none !important; }
+  }
+  /* 页眉 */
+  .hero{
+    border-radius:2.2mm; padding:2.6mm 4mm 2.4mm; color:#fff;
+    background:linear-gradient(100deg,#0b3b3a 0%,#0f766e 58%,#14958a 100%);
+    display:flex; align-items:flex-end; justify-content:space-between; gap:4mm;
+  }
+  .hero .kicker{ font-size:7.2pt; letter-spacing:.18em; color:#b8ece2; margin-bottom:.8mm; }
+  .hero h1{ margin:0; font-size:15.8pt; letter-spacing:.02em; line-height:1.18; }
+  .hero .lead{ margin-top:1.2mm; font-size:7.4pt; color:#d9f6ef; }
+  .hero .lead b{ color:#fff; }
+  .hero .badge{ flex:0 0 auto; text-align:center; font-size:6.8pt; line-height:1.5;
+    border:.4mm solid rgba(255,255,255,.5); border-radius:2mm; padding:1.8mm 2.4mm; color:#eafffb; }
+  .hero .badge b{ font-size:9.5pt; display:block; }
+  /* 小页眉 */
+  .runhead{ display:flex; align-items:center; gap:2mm; margin-bottom:2mm; padding-bottom:.8mm;
+    border-bottom:.4mm solid var(--teal); }
+  .runhead .pno{ background:var(--teal); color:#fff; border-radius:1mm; padding:.2mm 1.8mm;
+    font-weight:700; font-size:8pt; }
+  .runhead h2{ margin:0; font-size:10.9pt; color:var(--teal-dark); }
+  .runhead .sub{ margin-left:auto; color:var(--muted); font-size:6.9pt; }
+  /* 区块 */
+  .sec{ margin-top:2.2mm; }
+  .sec-h{ display:flex; align-items:center; gap:1.8mm; border-bottom:.45mm solid var(--teal);
+    padding-bottom:.5mm; margin-bottom:1.2mm; }
+  .sec-h .no{ flex:0 0 auto; min-width:5mm; height:5mm; padding:0 1mm; border-radius:1.2mm; background:var(--teal);
+    color:#fff; font-weight:700; font-size:7.6pt; display:flex; align-items:center; justify-content:center; }
+  .sec-h h3{ margin:0; font-size:10.5pt; color:var(--teal-dark); }
+  .sec-h .sub{ margin-left:auto; color:var(--muted); font-size:6.8pt; }
+  /* 卡片 */
+  .cards{ display:grid; gap:2mm; }
+  .g2{ grid-template-columns:1fr 1fr; }
+  .g3{ grid-template-columns:repeat(3,1fr); }
+  .g4{ grid-template-columns:repeat(4,1fr); }
+  .card{ border:.35mm solid var(--line); border-left:1mm solid var(--teal); border-radius:1.5mm;
+    padding:1.5mm 2mm; background:#fcfefe; }
+  .card h4{ margin:0 0 .8mm; font-size:9.2pt; color:var(--teal-dark); }
+  .card p{ margin:0; }
+  .card ul{ margin:0; padding-left:3.4mm; }
+  .card li{ margin:.3mm 0; }
+  .card.amber{ border-left-color:var(--amber); background:var(--amber-bg); }
+  .card.amber h4{ color:var(--amber); }
+  .card.blue{ border-left-color:var(--blue); background:var(--blue-bg); }
+  .card.blue h4{ color:var(--blue); }
+  .card.violet{ border-left-color:var(--violet); background:var(--violet-bg); }
+  .card.violet h4{ color:var(--violet); }
+  /* 表格 */
+  table.t{ width:100%; border-collapse:collapse; font-size:8pt; line-height:1.42; }
+  table.t th{ background:var(--teal-bg); color:var(--teal-dark); font-weight:700; text-align:left;
+    border:.3mm solid var(--line); padding:.85mm 1.1mm; }
+  table.t td{ border:.3mm solid var(--line); padding:.8mm 1.1mm; vertical-align:top; }
+  table.t td.c, table.t th.c{ text-align:center; }
+  table.t tr:nth-child(even) td{ background:#f8fafc; }
+  table.t td.k{ background:var(--teal-bg) !important; color:var(--teal-dark); font-weight:700;
+    white-space:nowrap; }
+  .mono{ font-family:Consolas,"Cascadia Mono",monospace; letter-spacing:.02em; }
+  .em{ color:var(--red); font-weight:700; }
+  .hi{ background:#fff2a8; padding:0 .5mm; border-radius:.5mm; font-weight:700; }
+  .tip{ margin-top:1mm; font-size:8.2pt; color:#334155; }
+  .tip b{ color:var(--teal-dark); }
+  .tip.warn{ background:var(--amber-bg); border-left:.9mm solid var(--amber); border-radius:.8mm;
+    padding:1mm 1.6mm; font-size:8.1pt; }
+  .tip.bad{ background:var(--red-bg); border-left:.9mm solid var(--red); border-radius:.8mm;
+    padding:1mm 1.6mm; font-size:8.1pt; }
+  table.t.compact td, table.t.compact th{ padding:.5mm .9mm; }
+  .list2{ columns:2; column-gap:4mm; margin:0; padding-left:4mm; font-size:8.2pt; }
+  .list2 li{ margin:.35mm 0; break-inside:avoid; }
+  .list3{ columns:3; column-gap:3mm; margin:0; padding-left:3.8mm; font-size:7.8pt; }
+  .list3 li{ margin:.25mm 0; break-inside:avoid; }
+  .foot{ margin-top:auto; padding-top:.8mm; border-top:.3mm solid var(--line);
+    color:var(--muted); font-size:6.4pt; display:flex; justify-content:space-between; gap:3mm; }
+  .foot b{ color:#475569; }
+  .foot span:last-child{ white-space:nowrap; }
+  .star{ color:var(--red); font-weight:700; letter-spacing:.04em; }
+  .minihead{ font-size:7.6pt; font-weight:700; color:var(--teal-dark); margin:0 0 .6mm; }
+  .answerbox{ border:.35mm solid var(--line); border-left:1mm solid var(--blue); border-radius:1.4mm;
+    padding:1.2mm 1.8mm; background:#f8fbff; font-size:7.2pt; }
+  .answerbox b{ color:var(--blue); }
+  /* 简易示意图 */
+  .flowbar{ display:flex; gap:1mm; align-items:stretch; margin-top:1mm; }
+  .flowbar .cell{ flex:1; border:.3mm solid var(--line); border-radius:1mm; padding:1mm 1.2mm;
+    background:#f8fafc; text-align:center; font-size:7.2pt; line-height:1.35; }
+  .flowbar .cell b{ display:block; font-family:Consolas,"Cascadia Mono",monospace;
+    color:var(--teal-dark); font-size:7.5pt; }
+  .flowbar .cell.hl{ background:var(--teal-bg); border-color:#9fd4c9; }
+  .flowbar .ar{ flex:0 0 auto; display:flex; align-items:center; color:var(--teal); font-weight:700; font-size:9pt; }
+  .label3{ display:grid; gap:1.2mm; margin-top:1mm; }
+  .label3 .row{ border:.3mm solid var(--line); border-left:1mm solid var(--teal); border-radius:1mm;
+    padding:1mm 2mm; font-size:7.4pt; background:#fcfefe; }
+  .label3 .row b{ color:var(--teal-dark); }
+  .structline{ font-family:Consolas,"Cascadia Mono",monospace; font-size:7.4pt; background:#f8fafc;
+    border:.3mm dashed var(--line); border-radius:1mm; padding:1.2mm 1.6mm; line-height:1.6; word-break:break-all; }
+  .structline b{ color:var(--teal-dark); }
+</style>
+</head>
+<body>
+
+<!-- ==================== P1 差异总表 ==================== -->
+<section class="page">
+  <div class="hero">
+    <div>
+      <div class="kicker">《条码技术与应用》本科分册 · 补差速记</div>
+      <h1>考试用本科分册，我只有高职分册？先补这些</h1>
+      <div class="lead">你的书：<b>高职高专分册·第二版（2018）</b>　|　考试书：<b>本科分册·第二版（2018）</b>　|　同系列教材：张成海、张铎 等（清华大学出版社；本科分册作者：张成海、张铎、赵守香、许国银）</div>
+    </div>
+    <div class="badge"><b>A4 × 6</b>共 6 页 · v2<br>已按教材原文校正</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">1</span><h3>先看结论：本科分册比高职分册“多”什么</h3><span class="sub">★越多越要补</span></div>
+    <table class="t">
+      <tr><th style="width:14%">本科分册章节</th><th style="width:35%">本科分册主要内容</th><th>你手里的高职分册情况</th><th class="c" style="width:7%">差异</th></tr>
+      <tr><td class="k">第1章 条码概述</td><td>起源与发展、研究内容、条码体系与物品标识、分类、条码与信息系统、商品条码管理、条码技术与标准化</td><td>高职第1章大体对应；补“条码技术与标准化、研究内容、物品编码技术体系”</td><td class="c">★</td></tr>
+      <tr><td class="k">第2章 GS1标准体系</td><td>GS1 总体框架；<b>编码体系</b>（GTIN、GLN、SSCC、GRAI、GIAI、GSRN、GDTI、GSIN、GINC、GCN、CPID、AI+附加属性）；数据载体；<b>数据共享</b>（EDI、XML、GDSN、EPCIS）；中国物品编码中心</td><td>高职第3章只有 GS1 形成、内容、应用领域的<b>概述</b>；本科把编码体系与数据共享展开成章</td><td class="c star">★★★</td></tr>
+      <tr><td class="k">第3章 编码技术</td><td>信息编码概述、代码设计原则、<b>线分类法/面分类法</b>、代码种类、<b>代码校验</b>、我国物品编码标准体系</td><td>高职第4章 4.2 有代码基础与编码方法，但代码校验、分类方法、标准体系本科更系统</td><td class="c star">★★★</td></tr>
+      <tr><td class="k">第4章 零售商品条码应用</td><td>零售商品编码原则/结构/编制；EAN-13、EAN-8、UPC-A；<b>变量贸易项目代码</b>；<b>特殊编码</b>（产品变体、组合包装、促销品、重新启用）；符号放置；<b>零售端 POS 应用</b></td><td>高职第6章偏“标准要求”；变量贸易项目、特殊编码、POS 应用缺</td><td class="c star">★★★</td></tr>
+      <tr><td class="k">第5章 储运包装条码应用</td><td>14 位代码结构/编制；<b>ITF-14（25 码/交叉 25）</b>；符号放置；仓库管理应用</td><td>高职第7章有储运包装标准要求；25/交叉 25 码制、ITF-14 符号技术、WMS 应用更细</td><td class="c">★★</td></tr>
+      <tr><td class="k">第6章 物流单元条码应用</td><td>物流单元化；SSCC/附加信息；<b>应用标识符 AI</b>；GLN；<b>GS1-128</b>；物流单元标签</td><td>高职第8章有物流单元标准与标签；AI 编码规则、GS1-128 符号细节、标签设计/尺寸更细</td><td class="c star">★★★</td></tr>
+      <tr><td class="k">第7章 制造业生产线上的条码应用</td><td>内部物流、产品追溯、缺陷召回、柔性制造；零部件标识（金属/陶瓷/隐形/银色）；ERP 集成；红领 C2M 案例</td><td>高职无对应章（第9章物流中心仅略涉生产/流通加工）</td><td class="c">★★</td></tr>
+      <tr><td class="k">第8章 GS1与供应链管理</td><td>供应链管理、QR/ECR、GDSN、协同商务、全球商务倡议、案例</td><td>高职无</td><td class="c">★★</td></tr>
+      <tr><td class="k">第9章 GS1与物联网应用</td><td>物联网、EPC/RFID/GDS、Ecode、物联网标识体系、数据分析、国家平台</td><td>高职第2章只有 RFID/自动识别基础</td><td class="c">★★</td></tr>
+      <tr><td class="k">第10章 GS1与电子商务</td><td>电商条码、GS1 DataMatrix、汉信码、二维码入口、O2O、移动支付、快递跟踪</td><td>高职第10章只有 Code 49/16K 等常见二维条码</td><td class="c">★★</td></tr>
+      <tr><td class="k">第11章 条码技术未来发展</td><td>产业市场、应用领域、趋势、<b>三维条码</b>、<b>工业4.0</b></td><td>高职 1.1.3 仅略提发展方向</td><td class="c">★</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">2</span><h3>本科“独有/明显加深”的节号清单（照着补）</h3><span class="sub">可直接在老师课件里定位</span></div>
+    <div class="cards g2">
+      <div class="card blue">
+        <h4>GS1 与编码（第2、3章）</h4>
+        <ul>
+          <li><b>2.2</b> GS1 编码体系：GTIN、SSCC、GLN、GRAI、GSRN、GIAI、GDTI、GINC、GSIN、GCN、CPID</li>
+          <li><b>2.3 / 2.4</b> 数据载体体系、数据共享体系（EDI、XML、GDSN、EPCIS）</li>
+          <li><b>3.5</b> 代码的校验（算术级数法、几何级数法、质数法）</li>
+          <li><b>3.6</b> 我国物品编码标准体系</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <h4>零售、储运、物流（第4~6章）</h4>
+        <ul>
+          <li><b>4.1~4.2</b> 零售编码原则/结构、EAN-13/EAN-8/UPC-A</li>
+          <li><b>4.3</b> 变量贸易项目代码；<b>4.4</b> 特殊编码；<b>4.6</b> 零售端 POS</li>
+          <li><b>5.4</b> ITF-14（25 码/交叉 25）；<b>5.6</b> 仓库管理应用</li>
+          <li><b>6.3</b> 应用标识符；<b>6.4</b> GLN；<b>6.5</b> GS1-128；<b>6.7</b> 物流单元标签</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cards g2" style="margin-top:1.6mm">
+      <div class="card amber">
+        <h4>本科新增的“应用篇”（第7~11章，整章补）</h4>
+        <p>第7章 制造业生产线 · 第8章 供应链管理 · 第9章 物联网 · 第10章 电子商务 · 第11章 未来发展（三维条码、工业4.0）。<br>
+        这五章以<b>概念、流程、案例</b>为主，计算题少；优先背名词和“三条要点”。</p>
+      </div>
+      <div class="card">
+        <h4>高职有、本科没有独立章节（别花太多时间）</h4>
+        <p>各类自动识别技术概述（磁卡/生物识别/图像识别）、条码识读技术、条码生成与检测细节、条码应用系统设计、案例集。<br>
+        <span class="em">但</span>如果老师课上讲过，仍按老师要求；本页只按“本科目录”排优先级。</p>
+      </div>
+    </div>
+    <div class="tip warn" style="margin-top:1.6mm">
+      <b>使用顺序：</b>① 先用老师课件/复习课圈定考试范围；② ★★★ 的章节看本速记第 2~5 页；③ 把老师强调的页码/表格抄到本页空白处；④ 考前 1 天只看第 1 页清单 + 第 6 页答题模板。
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>依据：</b>《条码技术与应用（本科分册·第二版）》2018 目录（ISBN 9787302485049）与《高职高专分册·第二版》2018 目录（ISBN 9787302484387），清华大学出版社。</span>
+    <span class="mono">bachelor-supplement p.1</span>
+  </div>
+</section>
+
+<!-- ==================== P2 GS1 编码体系 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">2</span><h2>GS1 编码体系（本科第 2 章核心）</h2><span class="sub">教材 P33~58 · 必补 ★★★</span></div>
+
+  <div class="cards g3">
+    <div class="card">
+      <h4>GS1 = 三部分</h4>
+      <p>① <b>编码体系</b>（给物品/位置/参与方编号）<br>② <b>数据载体</b>（条码、RFID 等）<br>③ <b>数据共享</b>（EDI、GDSN、EPCIS）<br>2005 年由 EAN International + UCC 合并而成。</p>
+    </div>
+    <div class="card">
+      <h4>一条主线</h4>
+      <p>给谁编号（<b>GTIN</b> 商品、<b>SSCC</b> 物流单元、<b>GLN</b> 位置）→ 用什么载体（EAN/UPC、ITF-14、GS1-128、DataBar、DataMatrix）→ 数据怎么共享（EDI/GDSN/EPCIS）。</p>
+    </div>
+    <div class="card">
+      <h4>中国物品编码中心</h4>
+      <p>1988 年 12 月成立；1991 年代表我国加入 EAN（后为 GS1）；负责商品条码/GS1 编码的注册、管理与标准推广。</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">3</span><h3>GTIN 家族：商品“身份证号”</h3><span class="sub">位数 + 结构必考</span></div>
+    <table class="t">
+      <tr><th style="width:11%">名称</th><th class="c" style="width:6%">位数</th><th>结构</th><th style="width:22%">常用载体</th><th style="width:21%">典型用途</th></tr>
+      <tr><td class="k">GTIN-8</td><td class="c">8</td><td>7 位商品项目识别代码 + 校验码（教材图 2-2）</td><td>EAN-8</td><td>小包装零售单品</td></tr>
+      <tr><td class="k">GTIN-12</td><td class="c">12</td><td>厂商识别代码 + 商品项目代码 + 校验 1（UPC-A）</td><td>UPC-A、UPC-E</td><td>北美零售单品</td></tr>
+      <tr><td class="k">GTIN-13</td><td class="c">13</td><td>厂商识别代码（7~10，含前缀）+ 商品项目代码（5~2）+ 校验 1（4 种结构）</td><td>EAN-13</td><td>全球零售单品（中国 690~699）</td></tr>
+      <tr><td class="k">GTIN-14</td><td class="c">14</td><td><b>包装指示符 1 位</b> + 包装内项目的 GTIN（不含校验，12 位）+ 校验 1</td><td>ITF-14、GS1-128</td><td>箱、托盘等包装单元</td></tr>
+    </table>
+    <div class="tip"><b>互转：</b>GTIN-13 = 0 + GTIN-12（UPC-A 前加 0）；GTIN-14 = 包装指示符 + GTIN-13 的 12 位数据 + 重算校验。<b>指示符为 0 时，GTIN-14 校验码与 GTIN-13 相同</b>；指示符 0~8 用于定量包装，9 用于变量包装。指示符<b>不是</b>校验位。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">4</span><h3>GS1 编码体系：教材共 11 类代码</h3><span class="sub">教材 P36~42 · AI 是“字段名”</span></div>
+    <table class="t">
+      <tr><th style="width:10%">标识代码</th><th class="c" style="width:8%">AI</th><th class="c" style="width:8%">常见长度</th><th>结构 / 要点</th><th style="width:23%">用途</th></tr>
+      <tr><td class="k">SSCC</td><td class="c mono">00</td><td class="c">18</td><td>扩展位 1 + 厂商识别代码（7~10）+ 序列号（7~10）+ 校验 1（4 种结构）</td><td>物流单元（托盘、箱、集装箱）</td></tr>
+      <tr><td class="k">GLN</td><td class="c mono">410~417</td><td class="c">13</td><td>厂商识别代码（7~9）+ 位置参考代码 + 校验 1（3 种结构）</td><td>参与方/位置；<b>414 = 物理位置</b></td></tr>
+      <tr><td class="k">GRAI</td><td class="c mono">8003</td><td class="c">14</td><td>填充位“0”1 位 + 厂商识别代码（7~10）+ 资产类型（2~5）+ 校验 1；可加序列号 1~16 位</td><td>可回收资产（托盘、周转箱）</td></tr>
+      <tr><td class="k">GIAI</td><td class="c mono">8004</td><td class="c">≤30</td><td>厂商识别代码（7~10）+ 单个资产参考（1~23，字母数字）</td><td>单个资产（设备等）</td></tr>
+      <tr><td class="k">GSRN</td><td class="c mono">8018</td><td class="c">18</td><td>厂商识别代码（7~10）+ 服务对象代码（2~10）+ 校验 1（4 种结构）</td><td>服务关系（患者、会员等）</td></tr>
+      <tr><td class="k">GDTI</td><td class="c mono">253</td><td class="c">13</td><td>全球文档类型标识；可加序列号</td><td>单据/文档标识</td></tr>
+      <tr><td class="k">GINC</td><td class="c mono">401</td><td class="c">≤30</td><td>全球托运货物标识（可字母数字）</td><td>一次托运（如货代运单）</td></tr>
+      <tr><td class="k">GSIN</td><td class="c mono">402</td><td class="c">17</td><td>全球装运货物标识：厂商识别代码 + 装运参考 + 校验</td><td>一次装运</td></tr>
+      <tr><td class="k">GCN</td><td class="c mono">255</td><td class="c">13</td><td>全球优惠券代码</td><td>优惠券</td></tr>
+      <tr><td class="k">CPID</td><td class="c mono">8010/8011</td><td class="c">变长</td><td>组件/部件标识；8011 为 CPID 序列号</td><td>零部件/组件</td></tr>
+    </table>
+    <div class="tip"><b>教材 11 类：</b>GTIN、GLN、SSCC、GRAI、GIAI、GSRN、GDTI、GSIN、GINC、GCN、CPID（教材 P36~42）。<b>规律：</b>GTIN、SSCC、GLN、GRAI、GSRN、GDTI、GSIN 带校验位；GIAI、GINC、CPID 变长。</div>
+    <table class="t compact" style="margin-top:1.2mm">
+      <tr><th style="width:11%">代码</th><th style="width:24%">示例</th><th>拆解（照这个格式背）</th></tr>
+      <tr><td class="k">GTIN-14</td><td class="mono">06901234567892</td><td><span class="mono">0</span> 包装指示符 | <span class="mono">690123456789</span> GTIN-13 的 12 位数据 | <span class="mono">2</span> 校验</td></tr>
+      <tr><td class="k">SSCC-18</td><td class="mono">106141411234567897</td><td><span class="mono">1</span> 扩展位 | <span class="mono">0614141</span> 公司前缀 | <span class="mono">123456789</span> 序列号 | <span class="mono">7</span> 校验</td></tr>
+      <tr><td class="k">GLN-13</td><td class="mono">6912345678902</td><td><span class="mono">691234567890</span> 公司前缀 + 位置参考 | <span class="mono">2</span> 校验（示例号，非真实分配）</td></tr>
+    </table>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">5</span><h3>应用标识符 AI 速查（背高频 12 个）</h3><span class="sub">括号只是人读格式</span></div>
+    <div class="cards g2">
+      <table class="t compact">
+        <tr><th class="c">AI</th><th>含义</th><th class="c">AI</th><th>含义</th></tr>
+        <tr><td class="c mono">00</td><td>SSCC（18 位）</td><td class="c mono">10</td><td>批号</td></tr>
+        <tr><td class="c mono">01</td><td>GTIN（14 位）</td><td class="c mono">11</td><td>生产日期 YYMMDD</td></tr>
+        <tr><td class="c mono">02</td><td>内容物 GTIN</td><td class="c mono">13</td><td>包装日期</td></tr>
+        <tr><td class="c mono">15</td><td>保质期（最佳食用）</td><td class="c mono">17</td><td>有效期</td></tr>
+        <tr><td class="c mono">20</td><td>产品变体</td><td class="c mono">21</td><td>序列号</td></tr>
+        <tr><td class="c mono">30</td><td>数量</td><td class="c mono">310n</td><td>净重（kg，n 为小数位）</td></tr>
+        <tr><td class="c mono">400</td><td>客户订单号</td><td class="c mono">422</td><td>原产国</td></tr>
+        <tr><td class="c mono">401</td><td>GINC</td><td class="c mono">402</td><td>GSIN</td></tr>
+      </table>
+      <div>
+        <div class="card">
+          <h4>写法与规则</h4>
+          <p>人读：<span class="mono">(01)06901234567892(17)261231(10)ABC123</span><br>
+          条码内：AI 与数据<b>连续</b>，没有括号；<b>固定长度 AI</b> 后直接接数据；<b>可变长度 AI</b> 后用 <b>FNC1</b> 分隔（GS1-128）。<br>
+          AI 是“字段名”：01 后面一定是 14 位 GTIN；10 后面是批号；17 后面是 6 位日期。</p>
+        </div>
+        <div class="tip warn" style="margin-top:1.4mm"><b>易错：</b>AI 不是数据本身；SSCC 的“00”是 AI，不是代码前两位；GTIN-14 的包装指示符不是校验位；GS1-128 的 FNC1 也不是数据。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>必背：</b>GTIN-8/12/13/14 位数与结构 · SSCC-18 · GLN-13 · AI 00/01/10/17/21/310n · “定长带校验、变长 GIAI/GINC/CPID”。</span>
+    <span class="mono">bachelor-supplement p.2</span>
+  </div>
+</section>
+
+<!-- ==================== P3 数据共享 + 编码技术 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">3</span><h2>数据共享（2.4）与编码技术（第 3 章）</h2><span class="sub">教材 P50~70 · 概念 + 代码校验</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="no">6</span><h3>GS1 数据共享体系：四个名词别混</h3><span class="sub">本科 2.4 / 第8章会用</span></div>
+    <table class="t">
+      <tr><th style="width:11%">名称</th><th style="width:18%">全称</th><th>一句话理解</th><th style="width:22%">典型标准/场景</th></tr>
+      <tr><td class="k">EDI</td><td>电子数据交换</td><td>把订单、发票、发货通知等<b>商业文档</b>按标准格式在系统间直接交换</td><td>UN/EDIFACT、GS1 EANCOM</td></tr>
+      <tr><td class="k">XML</td><td>可扩展标记语言</td><td>一种<b>数据格式</b>；GS1 XML 定义 B2B 业务消息</td><td>订单、主数据消息</td></tr>
+      <tr><td class="k">GDSN</td><td>全球数据同步网络</td><td>通过<b>数据池</b>在贸易伙伴间同步<b>主数据</b>（GTIN、属性、包装），保证数据一致</td><td>零售商/供应商商品主数据</td></tr>
+      <tr><td class="k">EPCIS</td><td>EPC 信息服务</td><td>记录/查询供应链<b>事件</b>：什么物品、在哪里、什么时候、为什么（what/where/when/why）</td><td>追溯、防伪、物流可视化</td></tr>
+    </table>
+    <div class="tip"><b>区分：</b>EDI 换“单据”，GDSN 同步“商品档案”，EPCIS 记“事件轨迹”，XML 只是“格式/语法”。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">7</span><h3>代码设计与代码种类（第 3 章）</h3><span class="sub">名词解释 / 简答</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>代码是什么、有什么用</h4>
+        <p>代码是用<b>数字、字母或符号</b>表示事物/概念的符号。作用：<b>标识、分类、排序、统计、检索、沟通</b>，便于计算机处理。</p>
+      </div>
+      <div class="card">
+        <h4>代码设计原则（记 6 个）</h4>
+        <p><b>唯一性、合理性、可扩充性、简明性、适用性、规范性</b>。<br>（GB/T 7027 还提：科学性、系统性、可扩延性、兼容性、综合实用性——两种表述都常见。）</p>
+      </div>
+      <div class="card">
+        <h4>分类方法：线分类 vs 面分类</h4>
+        <p><b>线分类法：</b>层级/树状，大类—中类—小类（如行政区划代码）。<br><b>面分类法：</b>按多个“面”（属性）组合（如服装按性别/年龄/款式）。<br>两者结合叫混合分类法。</p>
+      </div>
+      <div class="card">
+        <h4>代码种类（5 种）</h4>
+        <p><b>顺序码</b>（递增，简单不便分类）、<b>层次码/区间码</b>（分段表层级）、<b>矩阵码</b>（行列坐标）、<b>特征组合码</b>（各面组合）、<b>复合码</b>（两种以上组合）。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">8</span><h3>代码校验（3.5）：教材用“余数”作校验位</h3><span class="sub">教材 P65~66 · 与商品条码不同！</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>五步法</h4>
+        <p>① 给代码每一位 Cᵢ 定权数 Pᵢ（算术级数、几何级数或质数均可）；<br>
+        ② 求加权和 S = ΣCᵢPᵢ；<br>
+        ③ 确定模数 M；<br>
+        ④ 求余数 R = S mod M；<br>
+        ⑤ <b>校验位 = R（余数本身）</b>，不是 M−R。</p>
+      </div>
+      <div class="card amber">
+        <h4>教材例（P66）</h4>
+        <p>原码 <span class="mono">32456</span>，权数 <span class="mono">7,6,5,4,3</span>：<br>
+        S = 3×7 + 2×6 + 4×5 + 5×4 + 6×3 = <b>91</b>；<br>
+        M = 11；R = 91 mod 11 = <b>3</b>；校验位 = <b>3</b>；<br>
+        最终代码：<span class="mono">324563</span>。</p>
+      </div>
+    </div>
+    <div class="tip warn"><b>关键区别：</b>商品条码校验位 C = (10 − S mod 10) mod 10；<b>教材“代码校验”是 C = S mod M（取余数本身）</b>，千万别混。模数常用 11；余数为 10 时按教材规定处理（常见用 X，具体看教材）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">9</span><h3>我国物品编码标准体系（3.6）</h3><span class="sub">一句话 + 例子</span></div>
+    <div class="cards g2">
+      <div class="card blue">
+        <h4>物品基础编码系统</h4>
+        <p>解决“物品怎么分类、怎么给基础代码”，如产品分类与代码（GB/T 7635 等）、行政区划/行业/单位代码等，是编码的“底座”。</p>
+      </div>
+      <div class="card blue">
+        <h4>物品应用编码系统</h4>
+        <p>在基础编码之上，面向具体应用分配标识代码：商品条码（GB 12904）、储运包装、物流单元、资产/位置等，并规定条码表示。</p>
+      </div>
+    </div>
+    <div class="tip warn" style="margin-top:1.2mm"><b>开卷提示：</b>标准号记不住就记“基础编码 + 应用编码”两层；具体 GB/T 编号翻教材/课件，不要死背。</div>
+  </div>
+
+  <div class="foot">
+    <span><b>必背：</b>EDI/GDSN/EPCIS 区别 · 线分类/面分类 · 代码设计 6 原则 · 代码校验“加权—取模—取余数”。</span>
+    <span class="mono">bachelor-supplement p.3</span>
+  </div>
+</section>
+
+<!-- ==================== P4 零售 + 储运 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">4</span><h2>零售商品（第 4 章）与储运包装（第 5 章）</h2><span class="sub">教材 P71~124 · 应用细节</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="no">10</span><h3>零售商品编码：除了 EAN-13，还要会这些</h3><span class="sub">简答 / 案例题</span></div>
+    <div class="cards g3">
+      <div class="card">
+        <h4>编码原则（记 4 条）</h4>
+        <p><b>唯一性</b>（一个商品一个代码）<br><b>稳定性</b>（不随意变）<br><b>无含义</b>（代码不承载价格/规格等信息）<br><b>可扩展/规范性</b></p>
+      </div>
+      <div class="card amber">
+        <h4>变量贸易项目代码（4.3）</h4>
+        <p><b>店内条码：</b>前缀 <b>20~24</b>；8 位店内条码前缀 <b>2</b>。<br>
+        <b>13 位</b>用 EAN-13、<b>8 位</b>用 EAN-8；由商店自行编制，<b>不进全国商品数据库</b>（教材 P87~91）。</p>
+      </div>
+      <div class="card amber">
+        <h4>特殊编码（4.4）</h4>
+        <p><b>产品变体</b>：颜色/规格不同 → 不同项目代码（不同 GTIN）。<br><b>组合包装</b>：多个单品组合 → 分配新 GTIN；也可用 AI 02 内容物 GTIN + 30 数量。<br><b>促销品</b>：临时 GTIN，促销结束不复用。<br><b>重新启用</b>：停用后按规定间隔才可复用，不能随意。</p>
+      </div>
+    </div>
+    <table class="t compact" style="margin-top:1.4mm">
+      <tr><th style="width:15%">类型</th><th>结构（教材 P88~91 表 4-11 / 4-12 / 4-19）</th><th style="width:24%">校验 / 条码</th></tr>
+      <tr><td class="k">13 位·不含价格</td><td>前缀 X₁₃X₁₂（20~24）+ 商品项目代码 X₁₁~X₂（10 位，商店自编）+ 校验 X₁</td><td>校验同 EAN-13；用 EAN-13</td></tr>
+      <tr><td class="k">13 位·含价格</td><td>前缀 + <b>商品种类代码 4~6 位</b> + <b>价格/度量值代码 4~5 位</b>（结构三/四多 1 位“价格/度量值校验码”）+ 校验 1</td><td>表 4-12 共 4 种结构；用 EAN-13</td></tr>
+      <tr><td class="k">8 位</td><td>前缀 2 + 商品项目代码 6 位（商店自编）+ 校验 1</td><td>校验同 EAN-8；用 EAN-8</td></tr>
+    </table>
+    <div class="tip"><b>价格校验码</b>（结构三/四）：4 位价格码按加权因子 2−、2−、3、5− 求加权积 → 求和 → ×3 取个位；5 位价格码按 5+、2−、5−、5+、2− 求加权积 → 求和 → 用≥和的最小 10 倍数减和 → 查表得校验码（详见教材 P88~90 表 4-13~4-18）。</div>
+    <div class="cards g2" style="margin-top:1.6mm">
+      <div class="card">
+        <h4>条码符号放置（4.5）</h4>
+        <p>印在包装<b>主显示面</b>的平整处；避开接缝、封口、折边、弯曲、透明/反光区域；保证左右<b>空白区</b>；条高方向与扫描方向匹配；曲面/小包装选 EAN-8、UPC-E 等短码。具体按 GB 12904 与教材图示。</p>
+      </div>
+      <div class="card">
+        <h4>零售端条码应用（4.6）</h4>
+        <p><b>POS 系统</b>：收银结算、价格查询、库存扣减、销售报表、会员/促销。<br><b>单品管理</b>：以条码为索引，实现“单品—价格—库存—供应商”关联；支撑连锁经营、补货、质量追溯。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">11</span><h3>储运包装与 ITF-14（第 5 章）</h3><span class="sub">箱码 / 物流包装</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>GTIN-14 与 ITF-14</h4>
+        <p><b>GTIN-14</b> = 包装指示符（1）+ GTIN-13 去校验 12 位 + 校验 1；指示符 0~8 定量、9 变量。<br>
+        <b>ITF-14</b> 是交叉 25 条码的 14 位应用：只能表示数字、双密度、信息密度高；印刷需加<b>保护条（bearer bar）</b>，对瓦楞纸箱的印刷误差容忍度高。</p>
+      </div>
+      <div class="card">
+        <h4>25 码 / 交叉 25 码</h4>
+        <p><b>25 码</b>：每个字符用 5 个单元（条/空）表示，其中 2 个宽单元；只能表示数字。<br>
+        <b>交叉 25 码</b>：两位数字“交叉”编码，奇数位用条、偶数位用空，密度更高；ITF-14 就是它的典型应用。</p>
+      </div>
+      <div class="card">
+        <h4>符号放置与仓库应用（5.5/5.6）</h4>
+        <p>箱码印在包装箱的<b>指定面/相邻面</b>，避开接缝和封箱带，留足空白区；<br>仓库：收货—上架—拣货—复核—盘点—出库，用条码采集实现<b>实时库存、先进先出、批次追溯</b>。</p>
+      </div>
+      <div class="card">
+        <h4>与零售码的区别</h4>
+        <p>零售码（EAN-13/UPC-A）标识<b>单个商品</b>；储运箱码（GTIN-14）标识<b>包装单元</b>；物流单元再用 SSCC 标识“这一托/这一箱”。三层不要混。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">★</span><h3>三层标识别混：商品码 / 箱码 / 物流单元码</h3><span class="sub">一张图记住</span></div>
+    <div class="flowbar">
+      <div class="cell hl"><b>GTIN-13 / GTIN-12</b>零售单品<br>EAN-13 / UPC-A</div>
+      <div class="ar">→</div>
+      <div class="cell"><b>GTIN-14</b>包装箱<br>ITF-14 / GS1-128</div>
+      <div class="ar">→</div>
+      <div class="cell"><b>SSCC-18</b>物流单元<br>GS1-128（AI 00）</div>
+    </div>
+    <div class="tip">越往物流走，标识对象越大：单品 → 箱 → 托盘/集装箱；同一个商品可以同时有 GTIN-13 和 GTIN-14，但物流单元要用 SSCC（AI 00）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">★</span><h3>零售三种码速记（和速查卡一起看）</h3><span class="sub">共同内容别丢分</span></div>
+    <table class="t compact">
+      <tr><th style="width:12%">码制</th><th class="c" style="width:7%">位数</th><th>结构</th><th style="width:30%">记忆点</th></tr>
+      <tr><td class="k">EAN-13</td><td class="c">13</td><td>厂商识别代码 7~10（含前缀）+ 商品项目 5~2 + 校验 1（4 种结构）</td><td>中国 690~699；首位 0 时等价 UPC-A</td></tr>
+      <tr><td class="k">UPC-A</td><td class="c">12</td><td>系统码 1 + 厂商 5 + 商品 5 + 校验 1</td><td>北美；与 EAN-13 首位 0 等价</td></tr>
+      <tr><td class="k">EAN-8</td><td class="c">8</td><td>前缀码 + 商品项目代码 + 校验 1</td><td>小包装；<span class="em">不是压缩码</span></td></tr>
+      <tr><td class="k">UPC-E</td><td class="c">8</td><td>系统码 1 + 压缩数据 6 + 校验 1</td><td>UPC-A 的消零压缩；校验码抄 UPC-A</td></tr>
+    </table>
+    <div class="tip">EAN-13 / UPC-A / EAN-8 的符号结构、校验码、UPC-E 四条压缩规则，见之前的《开卷速查卡》第 1~2 页。</div>
+  </div>
+
+  <div class="foot">
+    <span><b>必背：</b>变量贸易项目用店内码 · 组合包装分配新 GTIN/AI 02+30 · GTIN-14 指示符 · ITF-14 = 交叉 25 + 保护条。</span>
+    <span class="mono">bachelor-supplement p.4</span>
+  </div>
+</section>
+
+<!-- ==================== P5 物流单元 + 制造业 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">5</span><h2>物流单元（第 6 章）与制造业生产线（第 7 章）</h2><span class="sub">教材 P125~233 · AI / GS1-128 / 标签 / 追溯</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="no">12</span><h3>物流单元：SSCC + AI + GS1-128 + 标签</h3><span class="sub">本科第6章重点</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>物流单元与 SSCC</h4>
+        <p><b>物流单元</b>：为运输/仓储组合而成的单元（托盘、箱、集装箱）。<br>
+        <b>SSCC-18</b> = 扩展位 1 + 公司前缀 + 序列号（共 16）+ 校验 1；用 <b>AI 00</b> 表示，是物流单元的“唯一身份证”。</p>
+      </div>
+      <div class="card">
+        <h4>应用标识符 AI（6.3）</h4>
+        <p>AI 是 2~4 位数字，规定后面数据的含义与长度。<br>
+        固定长度 AI：数据长度固定，直接接；<b>可变长度 AI：数据后要用 FNC1 分隔</b>。<br>
+        例：<span class="mono">(00)106141411234567897(01)06901234567892(10)ABC123</span></p>
+      </div>
+      <div class="card">
+        <h4>GS1-128（6.5）</h4>
+        <p>基于 <b>Code 128</b>。符号结构（左→右）：左侧空白区 + <b>双字符起始符</b>（Start A/B/C + FNC1）+ 数据字符（AI+数据）+ 校验符 + 终止符 + 右侧空白区。<br>
+        字符集 A/B/C（C 压缩数字）；教材 P170~185 还讲字符集表、尺寸要求、参考译码算法、应用参数。</p>
+      </div>
+      <div class="card">
+        <h4>物流单元标签（6.7/6.8）</h4>
+        <p>通常分三区：<b>上</b>承运人信息、<b>中</b>客户信息、<b>下</b>供应商/物流编码信息（SSCC 的 GS1-128 条码、RFID 等）。<br>
+        标签尺寸、位置按教材/标准；原则：不遮挡、不跨接缝、条码可扫。</p>
+      </div>
+    </div>
+    <div class="tip warn" style="margin-top:1.4mm"><b>易错：</b>SSCC 的 AI 是 00，不是数据；AI 01 的 GTIN 必须是 14 位（GTIN-13 前补 0）；GS1-128 的 FNC1 不是数据；物流标签上的 SSCC 用 GS1-128 承载，不是 EAN-13。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">13</span><h3>制造业生产线上的条码应用（第 7 章）</h3><span class="sub">整章新增 · 概念为主</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>内部物流与条码</h4>
+        <p><b>内部物流</b>：原材料、在制品、成品在工厂内部的流动。条码用于收货、上料、工序流转、质检、成品入库/出库，实现“物动账动”。</p>
+      </div>
+      <div class="card">
+        <h4>产品追溯与缺陷召回</h4>
+        <p><b>正向追踪</b>：从原料/批次查到成品去向；<b>反向溯源</b>：从成品查原料、工序、设备、人员。<br>
+        <b>缺陷召回</b>：凭批次/序列号快速圈定问题范围，缩小召回成本。</p>
+      </div>
+      <div class="card">
+        <h4>柔性制造 / 个性化定制</h4>
+        <p>多品种、小批量、订单驱动；条码作为工件/物料的身份标识，支撑 C2M（顾客到工厂）与混线生产。<br>教材案例：红领定制（C2M、个性化定制流程）。</p>
+      </div>
+      <div class="card">
+        <h4>零部件标识技术（7.4）</h4>
+        <p><b>金属条码</b>（激光/打标，耐高温耐磨）、<b>陶瓷条码</b>（高温环境）、<b>隐形条码</b>（UV 油墨）、<b>银色条码</b>（反光/金属表面）；按载体与耗材选。</p>
+      </div>
+      <div class="card">
+        <h4>ERP 中的条码集成（7.5）</h4>
+        <p>条码采集实时进入 ERP：物料主数据、库存、生产订单、质量记录；解决“账实不符、手工录入慢/错”的问题。</p>
+      </div>
+      <div class="card">
+        <h4>流程型制造业追溯方案（7.2）</h4>
+        <p>确定追溯单元（批次/件号）→ 设采集点（投料、工序、质检、包装）→ 建立关联 → 查询/召回。方案原则：唯一、可采集、可关联、可查询。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards g2" style="margin-top:1.6mm">
+    <div class="card">
+      <h4>GS1-128 数据串怎么读</h4>
+      <div class="structline"><b>起始符</b> | <b>FNC1</b> | AI 00 + SSCC(18 位) | <b>FNC1</b> | AI 01 + GTIN(14 位) | <b>校验符</b> | 终止符</div>
+      <p class="tip">起始符后的第一个 FNC1 表示“这是 GS1-128”；数据中间出现的 FNC1 是<b>变长字段分隔符</b>，不是数据。</p>
+    </div>
+    <div class="card">
+      <h4>物流标签三区</h4>
+      <div class="label3">
+        <div class="row"><b>上：承运人区</b>　承运人、路线、邮包号等运输信息</div>
+        <div class="row"><b>中：客户区</b>　收货方名称、地址、订单号等</div>
+        <div class="row"><b>下：供应商/编码区</b>　SSCC 的 GS1-128 条码、GTIN、批号、日期、RFID 等</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.6mm">
+    <h4>制造/物流追溯的链条（正向追踪 + 反向溯源）</h4>
+    <div class="flowbar">
+      <div class="cell">原料批次</div><div class="ar">→</div>
+      <div class="cell">投料/工序 1</div><div class="ar">→</div>
+      <div class="cell">工序 2 / 质检</div><div class="ar">→</div>
+      <div class="cell">包装/成品</div><div class="ar">→</div>
+      <div class="cell hl">仓储/客户</div>
+    </div>
+    <p class="tip">正向：从原料批次查到成品/客户去向；反向：从成品查到原料、工序、设备、人员。追溯单元通常用<b>批次号、序列号或唯一件号</b>。</p>
+  </div>
+
+  <div class="foot">
+    <span><b>必背：</b>SSCC-18 结构 · AI 00/01 · GS1-128 = Code 128 + FNC1 · 物流标签三区 · 追溯=正向追踪+反向溯源。</span>
+    <span class="mono">bachelor-supplement p.5</span>
+  </div>
+</section>
+
+<!-- ==================== P6 新章节 + 模板 ==================== -->
+<section class="page">
+  <div class="runhead"><span class="pno">6</span><h2>供应链 / 物联网 / 电商 / 未来（第 8~11 章）</h2><span class="sub">教材 P234~372 · 概念 + 名词解释</span></div>
+
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="no">14</span><h3>GS1 与供应链管理（第 8 章）</h3><span class="sub">简答高频</span></div>
+    <div class="cards g2">
+      <div class="card">
+        <h4>供应链管理是什么</h4>
+        <p>围绕核心企业，通过对<b>信息流、物流、资金流</b>的控制，从采购原料—制成中间产品/最终产品—销售网络送到消费者，把供应商、制造商、分销商、零售商、最终用户连成一个整体的<b>网链结构</b>。</p>
+      </div>
+      <div class="card">
+        <h4>QR / ECR / GDSN / 协同商务</h4>
+        <p><b>QR 快速反应</b>：共享销售信息，缩短补货周期、降库存。<br>
+        <b>ECR 有效客户响应</b>：以消费者为中心，供应链各方协作降本增效。<br>
+        <b>GDSN</b>：商品主数据同步。<br>
+        <b>协同商务</b>：企业间共享信息、协同计划与执行。</p>
+      </div>
+    </div>
+    <div class="tip"><b>案例关键词：</b>Liverpool（墨西哥零售商）用 EPC/RFID 提升供应链；南京微创 GS1/UDI（医疗器械唯一标识）。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">15</span><h3>GS1 与物联网（第 9 章）</h3><span class="sub">EPC / Ecode / 三层架构</span></div>
+    <div class="cards g3">
+      <div class="card">
+        <h4>物联网三层</h4>
+        <p><b>感知层</b>（条码/RFID/传感器采集）→ <b>网络层</b>（传输）→ <b>应用层</b>（处理/服务）。目的是识别、定位、跟踪、监控、管理。</p>
+      </div>
+      <div class="card">
+        <h4>EPC / RFID / GDS</h4>
+        <p><b>EPC</b>：电子产品代码，唯一标识单件物品，常用 96 位，与 GTIN 关联；通过 ONS 解析、EPCIS 记录事件。<b>RFID</b>：标签+读写器+天线；非接触、批量、可读写。<b>GDS</b>：全球数据同步。</p>
+      </div>
+      <div class="card">
+        <h4>Ecode 与国家平台</h4>
+        <p><b>Ecode</b>：我国物联网标识体系（GB/T 31866），由版本 V、编码体系标识 NSI、对象分类代码、序列号等组成；配套<b>国家物联网标识管理与公共服务平台</b>。</p>
+      </div>
+    </div>
+    <div class="tip"><b>应用场景：</b>智能家居、远程医疗、老人关怀、药品安全监控、零售/物流/供应链、食品追踪、农业育种。</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">16</span><h3>GS1 与电子商务（第 10 章）</h3><span class="sub">二维条码 + O2O + 支付</span></div>
+    <div class="cards g3">
+      <div class="card">
+        <h4>GS1 DataMatrix / 汉信码</h4>
+        <p><b>GS1 DataMatrix</b>：矩阵式二维条码，可编码 GTIN+批号+有效期+序列号，适合小件/医疗。<br><b>汉信码</b>：我国自主二维条码（GB/T 21049），汉字编码效率高。</p>
+      </div>
+      <div class="card">
+        <h4>二维码入口 / O2O</h4>
+        <p>扫码 → 网址/小程序/APP，作为<b>平台入口</b>与防伪溯源手段。<br><b>O2O</b>：线上引流/下单，线下消费/服务；二维码是关键入口。</p>
+      </div>
+      <div class="card">
+        <h4>移动支付 / 快递跟踪</h4>
+        <p><b>移动支付</b>：付款码/收款码，扫码完成支付；注意安全与限额。<br><b>快递跟踪</b>：运单条码/电子面单 + 各节点扫描；RFID 用于分拣/批量读取。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="no">17</span><h3>未来发展（第 11 章）+ 开卷答题模板</h3><span class="sub">最后 10 分钟看这里</span></div>
+    <div class="cards g3">
+      <div class="card violet">
+        <h4>三维条码 / 工业4.0</h4>
+        <p><b>三维条码</b>：在二维条码基础上增加颜色/灰度/层厚等维度，提高密度与防伪。<br><b>工业4.0</b>：CPS、智能工厂、智能生产、智能物流；条码/RFID 是物理世界进入信息系统的入口。</p>
+      </div>
+      <div class="card blue">
+        <h4>名词解释 3 句模板</h4>
+        <p>① <b>定义/全称</b>；② <b>组成或结构</b>（如“18 位 = 扩展位+公司前缀+序列号+校验”）；③ <b>作用/应用</b>（一句话举例）。</p>
+      </div>
+      <div class="card blue">
+        <h4>简答/对比题模板</h4>
+        <p>先列<b>维度</b>（位数/结构/载体/用途/优缺点），再逐条对比；最后一句“两者联系是……”。计算题：公式→代入→结果→验算。</p>
+      </div>
+    </div>
+    <div class="card blue" style="margin-top:1.6mm">
+      <h4>补差进度核对（打印后打勾）</h4>
+      <ul class="list2" style="columns:2">
+        <li>☐ GTIN-8/12/13/14 位数与结构</li>
+        <li>☐ SSCC-18、GLN-13 结构</li>
+        <li>☐ GRAI/GIAI/GSRN/GINC/GSIN 用途</li>
+        <li>☐ AI 00/01/10/17/21/310n</li>
+        <li>☐ EDI / GDSN / EPCIS 区别</li>
+        <li>☐ 代码设计 6 原则 + 线/面分类</li>
+        <li>☐ 三种代码校验法（算术/几何/质数）</li>
+        <li>☐ 变量贸易项目 / 特殊编码</li>
+        <li>☐ GTIN-14 / ITF-14 / 保护条</li>
+        <li>☐ GS1-128 结构 / 物流标签三区</li>
+        <li>☐ 制造业追溯 / 召回 / 柔性制造</li>
+        <li>☐ 供应链 QR / ECR / 协同商务</li>
+        <li>☐ 物联网三层 / EPC / Ecode</li>
+        <li>☐ GS1 DataMatrix / 汉信码 / O2O</li>
+        <li>☐ 三维条码 / 工业 4.0</li>
+      </ul>
+    </div>
+    <div class="answerbox" style="margin-top:1.4mm">
+      <b>考前 60 秒检查：</b>GTIN-14 指示符别当校验位 · SSCC 的 00 是 AI · AI 01 的 GTIN 补足 14 位 · 可变长 AI 后接 FNC1 · UPC-E 校验码抄 UPC-A · 代码校验“余 0 则 0、差为模数则 0”。
+    </div>
+    <div class="tip" style="margin-top:1.2mm">
+      <b>说明：</b>本补差页按《条码技术与应用（本科分册·第二版）》（2018，ISBN 9787302485049）目录逐节对照整理；具体定义、页码、标准号以老师课件和教材为准（若老师指定的是 2010 第一版，章号会略有不同，以课件为准）。第 1 章等共同内容看你自己的高职教材 + 之前的《速查卡》即可。
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>资料：</b>清华大学出版社《条码技术与应用》本科分册·第二版目录；GS1 General Specifications；GB/T 31866、GB/T 21049、GB 12904。</span>
+    <span class="mono">bachelor-supplement p.6</span>
+  </div>
+</section>
+
+<script>
+  // 预览辅助：?pg=N 只显示第 N 页；?debug=1 输出每页内容高度（不影响打印）
+  (function () {
+    var m = /[?&]pg=(\d+)/.exec(location.search);
+    if (m) {
+      var n = Number(m[1]);
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        if (i + 1 !== n) pages[i].style.display = 'none';
+      }
+      document.body.style.background = '#fff';
+    }
+    if (/[?&]debug=1\b/.test(location.search)) {
+      var info = [];
+      document.querySelectorAll('.page').forEach(function (p, i) {
+        var h0 = p.offsetHeight;
+        p.style.height = 'auto';
+        p.style.overflow = 'visible';
+        info.push('p' + (i + 1) + '=' + p.offsetHeight);
+      });
+      document.title = info.join(' | ');
+    }
+  })();
+</script>
+</body>
+</html>
+
+
+
+

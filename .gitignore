@@ -400,8 +400,11 @@ htmlcov/
 !.env.example
 
 # --- 编辑器 / IDE ---
-.idea/          # PyCharm
-# .vscode/      # 如需共享 VS Code 配置，可取消注释并按需保留 settings.json
+# 注意: .gitignore 不支持行内注释——`/dir/  # 说明` 会把注释也当作模式，
+# 导致目录实际未被忽略。说明必须独占一行。
+.idea/
+# .vscode/ 如需共享 VS Code 配置，可删除下面一行并按需保留 settings.json
+.vscode/
 
 # --- 生成输出 ---
 output/
@@ -412,3 +415,42 @@ output/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# ========================================================
+# 本地工作区整理（2026-10-25）
+# 下列内容仅保留在本机，不纳入公开仓库
+# ========================================================
+
+# --- 本地杂物 / 安装包 / 一次性脚本 ---
+_gcc16/
+_pwsh-msi/
+erwelmna.png
+Git.code-workspace
+_reorg_bili.py
+
+# --- 暂不公开的个人项目（本地保留） ---
+bilibili-transcripts/
+chaoxing-helper/
+
+# --- 第三方独立仓库副本（自身带 .git，勿嵌套提交） ---
+plugins/
+
+# --- 大体积游戏模组数据（约 48 GB） ---
+rimworld/
+
+# --- 含个人数据，仅保留本地；docgen 的生成脚本可提交 ---
+docgen/report_content.json
+docgen/survey_data.json
+
+# --- 本地工具生成的插件清单 ---
+plugin-candidates.json
+
+# --- pcl-patch: 仅提交源码与说明，忽略二进制与构建产物 ---
+pcl-patch/*.exe
+pcl-patch/work/
+pcl-patch/tool/bin/
+pcl-patch/tool/obj/
+
+# --- wsl-config: 忽略运行日志与本机 PATH 备份 ---
+wsl-config/*log*.txt
+wsl-config/PATH-*.txt
