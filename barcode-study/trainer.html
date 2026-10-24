@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>条码练习器 · 校验码 / 消零压缩 · EAN / UPC / GS1</title>
+<style>
+  :root{
+    --bg:#eef2f7; --card:#ffffff; --ink:#182230; --muted:#5f6b7c;
+    --teal:#0f766e; --teal-dark:#0b4f4a; --teal-bg:#e8f5f2; --teal-line:#a7d9cf;
+    --line:#d9e2ec; --amber:#b45309; --amber-bg:#fff7e6; --red:#b91c1c; --red-bg:#fef2f2;
+    --green:#15803d; --green-bg:#eefaf1; --blue:#1d4ed8; --blue-bg:#eef2ff;
+    --mono:ui-monospace,"Cascadia Mono",Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+    font-size:15px; line-height:1.6;
+  }
+  a{color:var(--teal); text-decoration:none}
+  button,input{font:inherit}
+  /* ---------- 顶栏 ---------- */
+  .topbar{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    padding:14px 22px; background:#fff; border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:10;
+  }
+  .brand{display:flex; align-items:center; gap:12px; margin-right:auto}
+  .logo{
+    width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#0b3b3a,#14958a);
+    display:flex; align-items:center; justify-content:center; gap:3px; flex:0 0 auto;
+  }
+  .logo i{display:block; width:4px; border-radius:1px; background:#fff}
+  .logo i:nth-child(1){height:24px}.logo i:nth-child(2){height:24px; opacity:.65}
+  .logo i:nth-child(3){height:24px; opacity:.35}
+  .brand h1{font-size:18px; margin:0; letter-spacing:.02em}
+  .brand p{margin:0; font-size:12px; color:var(--muted)}
+  .tabs{display:flex; gap:6px; background:#f1f5f9; padding:4px; border-radius:12px; flex-wrap:wrap}
+  .tabs button{
+    border:0; background:transparent; color:#475569; padding:8px 14px; border-radius:9px;
+    cursor:pointer; font-size:14px; font-weight:600;
+  }
+  .tabs button:hover{background:#e6edf5}
+  .tabs button.on{background:#fff; color:var(--teal-dark); box-shadow:0 1px 4px rgba(15,23,42,.12)}
+  .linkbtn{
+    border:1px solid var(--teal-line); background:var(--teal-bg); color:var(--teal-dark);
+    padding:9px 14px; border-radius:10px; font-size:13.5px; font-weight:600; white-space:nowrap;
+  }
+  .linkbtn:hover{background:#dcf1eb}
+  /* ---------- 布局 ---------- */
+  .wrap{max-width:1140px; margin:0 auto; padding:22px 18px 32px}
+  .tab{display:none}
+  .tab.on{display:block; animation:fade .18s ease}
+  @keyframes fade{from{opacity:0; transform:translateY(3px)}to{opacity:1; transform:none}}
+  .two{display:grid; grid-template-columns:.92fr 1.08fr; gap:18px; align-items:start}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 20px;
+    box-shadow:0 2px 10px rgba(15,23,42,.04);
+  }
+  .card + .card{margin-top:16px}
+  .two .card + .card, .two .card{margin-top:0}
+  .card-h{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:14px}
+  .card-h h2{margin:0; font-size:16px; color:var(--teal-dark)}
+  .hint{color:var(--muted); font-size:12.5px}
+  /* ---------- 输入 ---------- */
+  .types{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:16px}
+  .types button{
+    border:1.5px solid var(--line); background:#fff; border-radius:11px; padding:8px 6px;
+    cursor:pointer; text-align:center; color:#334155; font-weight:600; font-size:13.5px; line-height:1.3;
+  }
+  .types button small{display:block; color:var(--muted); font-weight:400; font-size:11px}
+  .types button:hover{border-color:var(--teal-line)}
+  .types button.on{border-color:var(--teal); background:var(--teal-bg); color:var(--teal-dark)}
+  .field-label{display:block; font-size:13px; color:#475569; margin:0 0 7px; font-weight:600}
+  input.big{
+    width:100%; padding:14px 16px; border:2px solid var(--line); border-radius:12px;
+    font-family:var(--mono); font-size:27px; letter-spacing:.09em; color:var(--ink);
+    background:#fbfdff; outline:none; transition:border-color .15s, box-shadow .15s;
+  }
+  input.big:focus{border-color:var(--teal); box-shadow:0 0 0 4px rgba(15,118,110,.12); background:#fff}
+  input.big::placeholder{color:#a8b3c2; letter-spacing:.02em; font-size:17px}
+  .examples{display:flex; flex-wrap:wrap; gap:8px; margin-top:13px}
+  .examples button, .chip{
+    border:1px solid var(--teal-line); background:#f5fbfa; color:var(--teal-dark);
+    border-radius:999px; padding:5px 12px; font-size:12.5px; cursor:pointer; font-family:var(--mono);
+  }
+  .examples button:hover{background:#e2f4ef}
+  .examples .lab{color:var(--muted); font-family:inherit; font-size:12px; padding:5px 0}
+  .msg{margin-top:12px; font-size:13.5px; color:var(--muted); min-height:1.2em}
+  .msg.bad{color:var(--red)}
+  /* ---------- 结果 ---------- */
+  .banner{
+    border-radius:12px; padding:12px 16px; font-size:15px; font-weight:600;
+    display:flex; align-items:center; gap:10px; margin-bottom:16px; line-height:1.45;
+  }
+  .banner .ico{font-size:20px}
+  .banner.ok{background:var(--green-bg); color:var(--green); border:1px solid #bbe6c8}
+  .banner.bad{background:var(--red-bg); color:var(--red); border:1px solid #f2c4c4}
+  .banner.data{background:var(--teal-bg); color:var(--teal-dark); border:1px solid var(--teal-line)}
+  .banner.warn{background:var(--amber-bg); color:var(--amber); border:1px solid #f0d9a8}
+  .answer-line{font-family:var(--mono); font-size:30px; letter-spacing:.12em; font-weight:700; margin:2px 0 4px}
+  .answer-line em{font-style:normal; color:var(--teal); border-bottom:3px solid var(--teal); padding:0 2px}
+  .sub{color:var(--muted); font-size:12.5px}
+  .struct{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 4px}
+  .seg{border:1px solid var(--line); border-radius:10px; padding:7px 11px; background:#fbfdff; min-width:74px}
+  .seg b{display:block; font-family:var(--mono); font-size:19px; letter-spacing:.08em; color:var(--teal-dark)}
+  .seg span{display:block; font-size:11.5px; color:var(--muted); line-height:1.35}
+  .seg.hl{background:var(--teal-bg); border-color:var(--teal-line)}
+  .steps{display:grid; grid-template-columns:repeat(auto-fill,minmax(88px,1fr)); gap:7px; margin:12px 0}
+  .step{border:1px solid var(--line); border-radius:9px; padding:6px 8px; background:#fcfdff; font-size:12px; color:var(--muted)}
+  .step b{display:block; font-family:var(--mono); font-size:15px; color:var(--ink); letter-spacing:.03em}
+  .step .eq{color:var(--teal-dark); font-weight:700}
+  .sumline{
+    font-family:var(--mono); font-size:14.5px; background:#f8fafc; border:1px dashed var(--line);
+    border-radius:10px; padding:10px 13px; line-height:1.7; word-break:break-all;
+  }
+  .sumline b{color:var(--teal-dark)}
+  .notes{margin:14px 0 0; padding:0; list-style:none}
+  .notes li{position:relative; padding-left:18px; font-size:13.5px; margin:5px 0; color:#334155}
+  .notes li::before{content:"•"; position:absolute; left:4px; color:var(--teal)}
+  .notes li.warn{background:var(--amber-bg); border-left:3px solid var(--amber); border-radius:7px; padding:8px 10px 8px 24px; margin-top:10px; color:#7c4a06}
+  .notes li.warn::before{left:9px; color:var(--amber)}
+  .notes li.bad{background:var(--red-bg); border-left:3px solid var(--red); border-radius:7px; padding:8px 10px 8px 24px; color:#7f1d1d}
+  .notes li.bad::before{left:9px; color:var(--red)}
+  .mono{font-family:var(--mono)}
+  .kv{font-family:var(--mono); background:#eef2f7; border-radius:5px; padding:1px 6px; font-size:.95em}
+  /* ---------- 表格 ---------- */
+  table.tbl{width:100%; border-collapse:collapse; font-size:13px; margin-top:8px}
+  table.tbl th{background:var(--teal-bg); color:var(--teal-dark); text-align:left; padding:8px 10px; border:1px solid var(--line)}
+  table.tbl td{padding:8px 10px; border:1px solid var(--line); vertical-align:top}
+  table.tbl td.mono{font-family:var(--mono); letter-spacing:.04em}
+  table.tbl tr:nth-child(even) td{background:#fafcfe}
+  table.tbl td.k{background:var(--teal-bg); color:var(--teal-dark); font-weight:600; white-space:nowrap}
+  /* ---------- 双栏工具 ---------- */
+  .tool-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start}
+  .tool-grid .card + .card{margin-top:0}
+  .tool-title{display:flex; align-items:center; gap:9px; margin-bottom:12px}
+  .tool-title h2{margin:0; font-size:16px; color:var(--teal-dark)}
+  .arrow{font-family:var(--mono); color:var(--teal); font-weight:700}
+  .rules{margin-top:18px}
+  .rules h2{font-size:16px; color:var(--teal-dark); margin:0 0 10px}
+  .tiny{font-size:12.5px; color:var(--muted)}
+  /* ---------- 练习 ---------- */
+  .drill{display:grid; grid-template-columns:288px 1fr; gap:18px; align-items:start}
+  .drill-side .card{margin-top:0}
+  .modes{display:grid; gap:8px; margin-bottom:14px}
+  .modes label{
+    display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:11px;
+    padding:9px 12px; cursor:pointer; background:#fff; font-size:14px; font-weight:600; color:#334155;
+  }
+  .modes label.on{border-color:var(--teal); background:var(--teal-bg); color:var(--teal-dark)}
+  .modes input{accent-color:var(--teal); width:16px; height:16px; margin:0}
+  .stats{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:4px 0 12px}
+  .stat{background:#f8fafc; border:1px solid var(--line); border-radius:11px; padding:9px 11px}
+  .stat b{display:block; font-size:19px; color:var(--teal-dark); line-height:1.2}
+  .stat span{font-size:11.5px; color:var(--muted)}
+  .qcard{min-height:420px; display:flex; flex-direction:column}
+  .qhead{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+  .qbadge{font-size:12px; font-weight:700; color:var(--teal-dark); background:var(--teal-bg); border:1px solid var(--teal-line); border-radius:999px; padding:3px 11px}
+  .qbadge.judge{color:var(--amber); background:var(--amber-bg); border-color:#f0d9a8}
+  .qtext{font-size:19px; font-weight:700; line-height:1.65; margin:8px 0 18px; word-break:break-all}
+  .qtext .mono{font-size:22px; letter-spacing:.08em; color:var(--teal-dark)}
+  .qanswer{display:flex; gap:10px; flex-wrap:wrap}
+  .qanswer input.big{font-size:24px; flex:1 1 auto; min-width:0; width:auto}
+  .qanswer .go{padding:0 22px; border:0; border-radius:12px; background:var(--teal); color:#fff; font-weight:700; cursor:pointer; font-size:15px}
+  .qanswer .go:hover{background:var(--teal-dark)}
+  .judge-btns{display:flex; gap:12px}
+  .judge-btns button{
+    flex:1; padding:14px; border-radius:12px; border:1.5px solid var(--line); background:#fff;
+    font-size:16px; font-weight:700; cursor:pointer; color:#334155;
+  }
+  .judge-btns button:hover{border-color:var(--teal)}
+  .judge-btns button.good{color:var(--green); border-color:#bbe6c8; background:var(--green-bg)}
+  .judge-btns button.bad{color:var(--red); border-color:#f2c4c4; background:var(--red-bg)}
+  .feedback{margin-top:16px; border-radius:12px; padding:13px 16px; font-size:14px; line-height:1.7}
+  .feedback.ok{background:var(--green-bg); border:1px solid #bbe6c8}
+  .feedback.bad{background:var(--red-bg); border:1px solid #f2c4c4}
+  .feedback h3{margin:0 0 8px; font-size:15px}
+  .feedback .answer{font-family:var(--mono); font-size:18px; letter-spacing:.08em}
+  .nextrow{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--teal-line); background:var(--teal-bg); color:var(--teal-dark);
+    padding:10px 18px; border-radius:11px; font-weight:700; cursor:pointer; font-size:14px;
+  }
+  .btn:hover{background:#dcf1eb}
+  .btn.primary{background:var(--teal); border-color:var(--teal); color:#fff}
+  .btn.primary:hover{background:var(--teal-dark)}
+  .btn.ghost{background:#fff}
+  .btn.small{padding:7px 12px; font-size:12.5px; font-weight:600; border-radius:9px}
+  .pagefoot{max-width:1140px; margin:0 auto; padding:0 18px 26px; color:#94a3b8; font-size:12px}
+  @media (max-width:900px){
+    .two,.tool-grid,.drill{grid-template-columns:1fr}
+    .drill-side{order:2}
+    .types{grid-template-columns:repeat(2,1fr)}
+    .tabs button{padding:8px 10px; font-size:13px}
+    .brand p{display:none}
+    input.big{font-size:22px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"><i></i><i></i><i></i></div>
+    <div>
+      <h1>条码练习器</h1>
+      <p>EAN · UPC · GS1 ｜ 校验码计算 · 消零压缩 · 随机测练</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="calc" class="on">① 校验码计算器</button>
+    <button data-tab="supp">② 消零压缩</button>
+    <button data-tab="drill">③ 随机测练</button>
+  </nav>
+  <a class="linkbtn" href="cheatsheet.html" target="_blank" rel="noopener">🖨 开卷速查表</a>
+</header>
+
+<main class="wrap">
+
+  <!-- ================= ① 校验码计算器 ================= -->
+  <section id="tab-calc" class="tab on">
+    <div class="two">
+      <div class="card">
+        <div class="card-h"><h2>选择码制并输入</h2><span class="hint">输入数据位自动补校验；输入完整码自动验码</span></div>
+        <div class="types" id="types">
+          <button data-type="EAN-13" class="on">EAN-13<small>13 位</small></button>
+          <button data-type="UPC-A">UPC-A<small>12 位</small></button>
+          <button data-type="EAN-8">EAN-8<small>8 位</small></button>
+          <button data-type="UPC-E">UPC-E<small>8 位 · 压缩码</small></button>
+          <button data-type="ITF-14">ITF-14<small>14 位</small></button>
+          <button data-type="SSCC-18">SSCC-18<small>18 位</small></button>
+        </div>
+        <label class="field-label" for="calcInput">数字（空格、横线会自动忽略）</label>
+        <input id="calcInput" class="big" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="24" placeholder="例如 690123456789">
+        <div class="examples" id="examples"></div>
+        <div class="msg" id="calcMsg"></div>
+      </div>
+      <div class="card" id="calcOut"></div>
+    </div>
+  </section>
+
+  <!-- ================= ② 消零压缩 ================= -->
+  <section id="tab-supp" class="tab">
+    <div class="tool-grid">
+      <div class="card">
+        <div class="tool-title"><h2>UPC-A</h2><span class="arrow">→</span><h2>UPC-E</h2><span class="hint" style="margin-left:auto">压缩</span></div>
+        <label class="field-label" for="suppA">输入 UPC-A（12 位；输 11 位数据位也可）</label>
+        <input id="suppA" class="big" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="14" placeholder="例如 042100005264">
+        <div class="examples">
+          <button id="randA">🎲 随机可压缩 UPC-A</button>
+          <button data-supp-a="042100005264">042100005264</button>
+          <button data-supp-a="012345000065">012345000065</button>
+        </div>
+        <div id="suppAOut"></div>
+      </div>
+      <div class="card">
+        <div class="tool-title"><h2>UPC-E</h2><span class="arrow">→</span><h2>UPC-A</h2><span class="hint" style="margin-left:auto">展开</span></div>
+        <label class="field-label" for="suppB">输入 UPC-E（8 位；输 7 位数据位也可）</label>
+        <input id="suppB" class="big" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="10" placeholder="例如 04252614">
+        <div class="examples">
+          <button id="randB">🎲 随机 UPC-E</button>
+          <button data-supp-b="04252614">04252614</button>
+          <button data-supp-b="01234565">01234565</button>
+        </div>
+        <div id="suppBOut"></div>
+      </div>
+    </div>
+
+    <div class="card rules">
+      <h2 style="font-size:15px">判定口诀：先看系统码，再找连续零</h2>
+      <div id="rulesBox" class="tiny"></div>
+    </div>
+  </section>
+
+  <!-- ================= ③ 随机测练 ================= -->
+  <section id="tab-drill" class="tab">
+    <div class="drill">
+      <div class="drill-side">
+        <div class="card">
+          <div class="card-h"><h2>题型</h2><span class="hint">回车提交 / 下一题</span></div>
+          <div class="modes" id="modes">
+            <label class="on"><input type="radio" name="mode" value="mixed" checked>混合（推荐）</label>
+            <label><input type="radio" name="mode" value="check">校验码填空</label>
+            <label><input type="radio" name="mode" value="judge">判断正误</label>
+            <label><input type="radio" name="mode" value="a2e">UPC-A → UPC-E</label>
+            <label><input type="radio" name="mode" value="e2a">UPC-E → UPC-A</label>
+          </div>
+          <div class="stats">
+            <div class="stat"><b id="stRight">0</b><span>答对 / 共 <span id="stTotal">0</span> 题</span></div>
+            <div class="stat"><b id="stRate">—</b><span>正确率</span></div>
+            <div class="stat"><b id="stStreak">0</b><span>当前连对</span></div>
+            <div class="stat"><b id="stBest">0</b><span>最佳连对</span></div>
+          </div>
+          <button class="btn ghost small" id="resetStats">清零统计</button>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="card-h"><h2 style="font-size:14px">练习提示</h2></div>
+          <ul class="notes" style="margin:0">
+            <li>校验码 ≤ 90 秒、压缩题 ≤ 2 分钟算达标。</li>
+            <li>先自己算，再看解析；错题当场用速查表对一遍。</li>
+            <li>连续 20 题全对，就可以上考场了。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card qcard" id="qcard"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="pagefoot">本地离线工具，无需联网 · 与 <a href="cheatsheet.html">开卷速查表</a> 配套使用 · 算法依据 GS1 General Specifications / ISO-IEC 15420 / GB 12904</footer>
+
+<script src="barcode-core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var B = window.BarcodeCore;
+  if (!B) { document.body.innerHTML = '<p style="padding:30px">未找到 barcode-core.js，请确认与 trainer.html 在同一目录。</p>'; return; }
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmt(code) { return String(code).replace(/(.{4})(?=.)/g, '$1 '); }
+
+  var state = {
+    tab: 'calc',
+    calcType: 'EAN-13',
+    drill: { mode: 'mixed', right: 0, total: 0, streak: 0, best: 0, q: null, answered: false, t0: 0 }
+  };
+
+  /* ---------------- 通用 UI ---------------- */
+  function setTab(name) {
+    state.tab = name;
+    $$('#tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-tab') === name); });
+    $$('.tab').forEach(function (s) { s.classList.toggle('on', s.id === 'tab-' + name); });
+    if (name === 'calc') renderCalc();
+    if (name === 'supp') { renderSuppA(); renderSuppB(); }
+    if (name === 'drill' && !state.drill.q) nextQuestion();
+  }
+  $$('#tabs button').forEach(function (b) {
+    b.addEventListener('click', function () { setTab(b.getAttribute('data-tab')); });
+  });
+
+  /* ---------------- ① 校验码计算器 ---------------- */
+  var EXAMPLES = {
+    'EAN-13': [{ lab: '数据 690123456789', v: '690123456789' }, { lab: '完整码 6901234567892', v: '6901234567892' }],
+    'UPC-A': [{ lab: '数据 03600029145', v: '03600029145' }, { lab: '完整码 036000291452', v: '036000291452' }],
+    'EAN-8': [{ lab: '数据 9638507', v: '9638507' }, { lab: '完整码 96385074', v: '96385074' }],
+    'UPC-E': [{ lab: 'UPC-E 04252614', v: '04252614' }, { lab: '数据 0425261', v: '0425261' }],
+    'ITF-14': [{ lab: '数据 1001234500001', v: '1001234500001' }, { lab: '完整码 10012345000017', v: '10012345000017' }],
+    'SSCC-18': [{ lab: '数据 10614141123456789', v: '10614141123456789' }, { lab: '完整码 106141411234567897', v: '106141411234567897' }]
+  };
+  var TYPE_HINT = {
+    'EAN-13': '13 位 = 前缀码 + 厂商识别代码 + 商品项目代码 + 校验码；中国 690~699。',
+    'UPC-A': '12 位 = 系统码 + 5 位厂商代码 + 5 位商品代码 + 校验码。',
+    'EAN-8': '8 位 = 前缀码 + 商品项目代码 + 校验码；是独立短码，不是压缩码。',
+    'UPC-E': '8 位 = 系统码（0/1）+ 6 位压缩数据 + 校验码；校验码 = 对应 UPC-A 的校验码。',
+    'ITF-14': '14 位 = 包装指示符 + 12 位数据 + 校验码；用于箱/托盘。',
+    'SSCC-18': '18 位 = 扩展位 + 16 位厂商代码/序列号 + 校验码；通常用 GS1-128 的 AI 00 表示。'
+  };
+
+  function parseDigits(s) { return B.clean(s); }
+
+  function stepCards(calc) {
+    return '<div class="steps">' + calc.steps.map(function (s) {
+      return '<div class="step">位' + s.pos + '　数字 <b>' + s.digit + '</b> × ' + s.weight +
+        ' <span class="eq">= ' + s.product + '</span></div>';
+    }).join('') + '</div>' +
+    '<div class="sumline">Σ = ' + calc.steps.map(function (s) { return s.digit + '×' + s.weight; }).join(' + ') +
+    ' = <b>' + calc.sum + '</b><br>' +
+    '校验码 C = (10 − ' + calc.sum + ' mod 10) mod 10 = (10 − ' + calc.mod + ') mod 10 = <b>' + calc.check + '</b></div>';
+  }
+
+  function structHtml(type, code) {
+    var segs = B.structure(type, code);
+    if (!segs.length) return '';
+    return '<div class="struct">' + segs.map(function (s, i) {
+      return '<div class="seg' + (i === segs.length - 1 ? ' hl' : '') + '"><b>' + esc(s.text) + '</b><span>' +
+        esc(s.label) + (s.tip ? ' · ' + esc(s.tip) : '') + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  function notePrefix(type, code) {
+    if (type === 'EAN-13' || type === 'EAN-8') {
+      var p = B.prefixInfo(code);
+      if (p.region) return '前 3 位 <span class="kv">' + p.prefix + '</span> 属于 <b>' + esc(p.region) + '</b> 的 GS1 前缀。';
+      return '前缀码 <span class="kv">' + p.prefix + '</span>：可按 GS1 前缀码表查询国家/地区。';
+    }
+    if (type === 'UPC-A') {
+      return '第 1 位是系统码：0/1 常规零售，2 称重，3 药品，4 店内码，5 优惠券。';
+    }
+    if (type === 'ITF-14') {
+      return '第 1 位是包装指示符（0~8 定量包装，9 变量），不是校验位。';
+    }
+    if (type === 'SSCC-18') {
+      return 'SSCC 用 GS1-128 表示时写作 <span class="kv">(00)</span> + 18 位；AI 00 本身不是数据。';
+    }
+    return '';
+  }
+
+  function renderCalcOut() {
+    var t = state.calcType;
+    var input = $('#calcInput').value;
+    var out = $('#calcOut');
+    var msg = $('#calcMsg');
+    msg.textContent = '';
+    msg.className = 'msg';
+    var ins = B.inspect(t, input);
+    if (ins.error || ins.mode === 'invalid') {
+      out.innerHTML = '<div class="banner warn"><span class="ico">⌨️</span><span>' + esc(ins.error || '请输入数字') + '</span></div>' +
+        '<p class="sub">' + esc(TYPE_HINT[t]) + '</p>';
+      return;
+    }
+    if (ins.mode === 'short') {
+      out.innerHTML = '<div class="banner warn"><span class="ico">…</span><span>' + esc(ins.error) + '</span></div>' +
+        '<p class="sub">' + esc(TYPE_HINT[t]) + '</p>';
+      return;
+    }
+
+    var r = ins.result;
+    var html = '';
+
+    if (t === 'UPC-E') {
+      var ex = r.upce;
+      if (ins.mode === 'full') {
+        html += r.ok
+          ? '<div class="banner ok"><span class="ico">✓</span><span>校验码正确：末位 <b>' + r.actual + '</b> = 展开后 UPC-A 的校验码</span></div>'
+          : '<div class="banner bad"><span class="ico">✗</span><span>校验码错误：应为 <b>' + r.expected + '</b>，实际 ' + r.actual + '</span></div>';
+        html += '<div class="answer-line">' + fmt(ins.input) + '</div>';
+        html += structHtml(t, ins.input);
+        html += '<p class="sub" style="margin-top:10px"><b>展开成 UPC-A：</b><span class="mono" style="font-size:17px;color:var(--teal-dark)">' +
+          fmt(ex.upca) + '</span>　' + (ex.checkValid ? '✓ 校验通过' : '') + '</p>';
+      } else {
+        var full = ins.input + r.expected;
+        html += '<div class="banner data"><span class="ico">#</span><span>校验码 = <b style="font-size:22px;font-family:var(--mono)">' + r.expected +
+          '</b>　完整 UPC-E：<b class="mono" style="font-size:19px">' + fmt(full) + '</b></span></div>';
+        html += '<div class="answer-line">' + fmt(full) + '</div>';
+        html += structHtml(t, full);
+        html += '<p class="sub">输入的是 7 位数据位，系统已按展开后的 UPC-A 补出校验码。</p>';
+      }
+      html += '<p class="sub" style="margin-top:8px"><b>展开 UPC-A：</b><span class="mono" style="font-size:17px;color:var(--teal-dark)">' + fmt(ex.upca) +
+        '</span>　厂商 <span class="mono">' + ex.manufacturer + '</span>，商品 <span class="mono">' + ex.item + '</span>，标记位 <b>' + ex.marker + '</b></p>';
+      html += '<ul class="notes">';
+      html += '<li>规则：' + esc(ex.ruleText) + '</li>';
+      html += '<li>校验码来源：<b>沿用展开后 UPC-A 的校验码</b>，不是对 8 位 UPC-E 直接计算。</li>';
+      html += '<li class="warn">注意：把 8 位 UPC-E 当普通码“自己算校验”会得到错误结果（例：0425261 自算 = 0，实际应为 4）。</li>';
+      html += '</ul>';
+      out.innerHTML = html;
+      return;
+    }
+
+    if (ins.mode === 'full') {
+      html += r.ok
+        ? '<div class="banner ok"><span class="ico">✓</span><span>校验码正确（末位 <b>' + r.actual + '</b>）</span></div>'
+        : '<div class="banner bad"><span class="ico">✗</span><span>校验码错误：应为 <b>' + r.expected + '</b>，实际 ' + r.actual + '</span></div>';
+      html += '<div class="answer-line">' + fmt(ins.input) + '</div>';
+      html += structHtml(t, ins.input);
+      html += stepCards(r.calc);
+    } else {
+      html += '<div class="banner data"><span class="ico">#</span><span>校验码 = <b style="font-size:24px;font-family:var(--mono)">' + r.expected +
+        '</b>　完整码：<b class="mono" style="font-size:20px">' + fmt(r.full) + '</b></span></div>';
+      html += '<div class="answer-line">' + fmt(r.full) + '</div>';
+      html += structHtml(t, r.full);
+      html += stepCards(r.calc);
+    }
+    var notes = [];
+    var pn = notePrefix(t, ins.input.length === B.MODELS[t].len ? ins.input : (r.full || ''));
+    if (pn) notes.push('<li>' + pn + '</li>');
+    if (t === 'EAN-13' && ins.input.charAt(0) === '0' && ins.input.length >= 13) {
+      notes.push('<li>首位为 0：这条码等价于 UPC-A <span class="mono">' + ins.input.slice(1) + '</span>（去掉首位 0）。</li>');
+    }
+    if (t === 'EAN-13' && ins.mode === 'data' && r.full.charAt(0) === '0') {
+      notes.push('<li>首位为 0：这条码等价于 UPC-A <span class="mono">' + r.full.slice(1) + '</span>。</li>');
+    }
+    if (t === 'UPC-A') notes.push('<li>重量/长度等规则：校验位不参与计算；UPC-A 与 EAN-13 前加 0 后校验码相同。</li>');
+    if (t === 'ITF-14') notes.push('<li>GTIN-14 = 包装指示符 + GTIN-13 去掉校验位的 12 位 + 校验；指示符为 0 时校验码与 GTIN-13 相同。</li>');
+    if (t === 'SSCC-18') notes.push('<li>SSCC-18 的校验算法与 EAN/UPC 相同：从最右数据位 ×3 开始。</li>');
+    if (notes.length) html += '<ul class="notes">' + notes.join('') + '</ul>';
+    out.innerHTML = html;
+  }
+
+  function renderCalcExamples() {
+    var box = $('#examples');
+    box.innerHTML = '<span class="lab">示例：</span>' + EXAMPLES[state.calcType].map(function (e) {
+      return '<button data-v="' + e.v + '">' + esc(e.lab) + '</button>';
+    }).join('');
+    $$('#examples button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $('#calcInput').value = b.getAttribute('data-v');
+        renderCalcOut();
+      });
+    });
+  }
+
+  function renderCalc() {
+    $$('#types button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-type') === state.calcType); });
+    renderCalcExamples();
+    renderCalcOut();
+  }
+
+  $$('#types button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.calcType = b.getAttribute('data-type');
+      $('#calcInput').value = '';
+      $('#calcInput').placeholder = '输入 ' + B.MODELS[state.calcType].name + '（数据位或完整码）';
+      renderCalc();
+    });
+  });
+  $('#calcInput').addEventListener('input', renderCalcOut);
+
+  /* ---------------- ② 消零压缩 ---------------- */
+  function renderSuppA() {
+    var out = $('#suppAOut');
+    var input = $('#suppA').value;
+    if (!input.trim()) { out.innerHTML = '<p class="msg">输入 UPC-A 后自动显示能否压缩、按哪条规则压缩。</p>'; return; }
+    var c = B.compressUPCA(input);
+    if (!c.compressible) {
+      out.innerHTML = '<div class="banner warn"><span class="ico">⚠️</span><span>' + esc(c.reason) + '</span></div>' +
+        (c.upca ? '<p class="sub">规范化后的完整 UPC-A：<span class="mono" style="font-size:17px;color:var(--teal-dark)">' + fmt(c.upca) + '</span></p>' : '') +
+        '<p class="tiny">提示：UPC-A 中至少要按规则消去 4 个零；系统码必须是 0 或 1。</p>';
+      return;
+    }
+    var m = c.upca.slice(1, 6), p = c.upca.slice(6, 11);
+    out.innerHTML =
+      '<div class="banner ok" style="margin-top:14px"><span class="ico">✓</span><span>可压缩！UPC-E = <b class="mono" style="font-size:20px">' + fmt(c.upce) + '</b></span></div>' +
+      '<div class="struct">' +
+        '<div class="seg"><b>' + c.upce.charAt(0) + '</b><span>系统码（照抄）</span></div>' +
+        '<div class="seg"><b>' + c.data6 + '</b><span>6 位压缩数据</span></div>' +
+        '<div class="seg hl"><b>' + c.upce.charAt(7) + '</b><span>校验码（抄 UPC-A）</span></div>' +
+      '</div>' +
+      '<table class="tbl" style="margin-top:12px"><tr><th>项</th><th>UPC-A</th><th>说明</th></tr>' +
+        '<tr><td class="k">厂商代码</td><td class="mono">' + m + '</td><td>保留规则要求的位数，其余零被消去</td></tr>' +
+        '<tr><td class="k">商品代码</td><td class="mono">' + p + '</td><td>开头的零按规则消去</td></tr>' +
+        '<tr><td class="k">6 位数据</td><td class="mono">' + c.data6 + '</td><td>' + esc(c.ruleText) + '</td></tr>' +
+        '<tr><td class="k">校验码</td><td class="mono">' + c.upce.charAt(7) + '</td><td>直接沿用 UPC-A 的校验码（不重算）</td></tr>' +
+      '</table>' +
+      '<ul class="notes"><li>规则：<b>' + esc(c.rule) + '</b>（标记位 = 数据第 6 位 <span class="kv">' + c.data6.charAt(5) + '</span>）。</li>' +
+      '<li>展开校验：UPC-A 数据 <span class="mono">' + c.upca.slice(0, 11) + '</span> 的校验码 = <b>' + c.check + '</b>，与 UPC-E 末位一致。</li></ul>';
+  }
+
+  function renderSuppB() {
+    var out = $('#suppBOut');
+    var input = $('#suppB').value;
+    if (!input.trim()) { out.innerHTML = '<p class="msg">输入 UPC-E 后自动展开成 UPC-A。</p>'; return; }
+    var ex = B.expandUPCE(input);
+    if (ex.error) {
+      out.innerHTML = '<div class="banner warn"><span class="ico">⚠️</span><span>' + esc(ex.error) + '</span></div>';
+      return;
+    }
+    var data = B.clean(input).slice(1, 7);
+    out.innerHTML =
+      '<div class="banner ok" style="margin-top:14px"><span class="ico">✓</span><span>展开为 UPC-A：<b class="mono" style="font-size:20px">' + fmt(ex.upca) + '</b></span></div>' +
+      '<div class="struct">' +
+        '<div class="seg"><b>' + ex.manufacturer + '</b><span>厂商代码（5 位）</span></div>' +
+        '<div class="seg"><b>' + ex.item + '</b><span>商品代码（5 位）</span></div>' +
+        '<div class="seg hl"><b>' + ex.check + '</b><span>校验码（不变）</span></div>' +
+      '</div>' +
+      '<table class="tbl" style="margin-top:12px"><tr><th>项</th><th>值</th><th>说明</th></tr>' +
+        '<tr><td class="k">UPC-E 数据</td><td class="mono">' + data + '</td><td>第 6 位 <b>' + ex.marker + '</b> 是标记位（消零规则标记）</td></tr>' +
+        '<tr><td class="k">规则</td><td class="mono">' + ex.rule + '</td><td>' + esc(ex.ruleText) + '</td></tr>' +
+        '<tr><td class="k">UPC-A</td><td class="mono">' + ex.upca + '</td><td>系统码照抄；校验码 = <b>' + ex.check + '</b></td></tr>' +
+      '</table>' +
+      '<ul class="notes"><li>换算自检：UPC-A 数据 <span class="mono">' + ex.upcaData + '</span> 加权和 = <b>' + ex.calc.sum + '</b>，校验 = <b>' + ex.check + '</b>' +
+      (ex.checkValid === true ? '，与 UPC-E 末位一致 ✓' : (ex.checkValid === false ? '，与 UPC-E 末位不一致 ✗' : '')) + '。</li>' +
+      '<li>输入 7 位数据位时，校验码由系统按展开后的 UPC-A 补出。</li></ul>';
+  }
+
+  $('#suppA').addEventListener('input', renderSuppA);
+  $('#suppB').addEventListener('input', renderSuppB);
+  $$('[data-supp-a]').forEach(function (b) { b.addEventListener('click', function () { $('#suppA').value = b.getAttribute('data-supp-a'); renderSuppA(); }); });
+  $$('[data-supp-b]').forEach(function (b) { b.addEventListener('click', function () { $('#suppB').value = b.getAttribute('data-supp-b'); renderSuppB(); }); });
+  $('#randA').addEventListener('click', function () {
+    var r = B.randomCompressibleUPCA();
+    $('#suppA').value = r.upca; renderSuppA();
+  });
+  $('#randB').addEventListener('click', function () {
+    var r = B.randomCompressibleUPCA();
+    $('#suppB').value = r.upce; renderSuppB();
+  });
+
+  $('#rulesBox').innerHTML =
+    '<table class="tbl"><tr><th>标记位（数据第 6 位）</th><th>UPC-A 零结构</th><th>UPC-E 6 位数据</th></tr>' +
+    '<tr><td class="k">0/1/2</td><td>厂商 M₃M₄M₅ = 000/100/200；商品前 2 位 00（≤00999）</td><td class="mono">M₁M₂ P₃P₄P₅ M₃</td></tr>' +
+    '<tr><td class="k">3</td><td>厂商末 2 位 00 且第 3 位 3~9；商品前 3 位 000（≤00099）</td><td class="mono">M₁M₂M₃ P₄P₅ 3</td></tr>' +
+    '<tr><td class="k">4</td><td>厂商末位 0（第 4 位非 0）；商品前 4 位 0000（≤00009）</td><td class="mono">M₁M₂M₃M₄ P₅ 4</td></tr>' +
+    '<tr><td class="k">5~9</td><td>厂商末位非 0；商品 = 00005~00009</td><td class="mono">M₁M₂M₃M₄M₅ P₅</td></tr></table>' +
+    '<p class="tiny" style="margin:10px 0 0">反向：按 UPC-E 数据第 6 位选上表对应行，把 6 位数据拆回“厂商 5 位 + 商品 5 位”，系统码照抄、校验码不变。</p>';
+
+  /* ---------------- ③ 随机测练 ---------------- */
+  var CHECK_TYPES = ['EAN-13', 'UPC-A', 'EAN-8', 'ITF-14', 'SSCC-18'];
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function pad(n) { return String(n); }
+
+  function makeQuestion(kind) {
+    if (kind === 'check') {
+      var type = pick(CHECK_TYPES);
+      var code = B.randomCode(type);
+      var data = code.slice(0, -1);
+      return {
+        kind: 'check', type: type, code: code, data: data, answer: code.slice(-1),
+        title: '求 ' + B.MODELS[type].name + ' 的校验码',
+        prompt: '数据位：<span class="mono">' + data + '</span> 　请填最后一位校验码',
+        inputLen: 1
+      };
+    }
+    if (kind === 'judge') {
+      var jtype = pick(CHECK_TYPES);
+      var ok = Math.random() < 0.5;
+      var jcode = ok ? B.randomCode(jtype) : B.randomWrongCheck(jtype);
+      return {
+        kind: 'judge', type: jtype, code: jcode, answer: B.validate(jtype, jcode).ok ? 'ok' : 'bad',
+        title: '判断这条 ' + B.MODELS[jtype].name + ' 的校验码是否正确',
+        prompt: '<span class="mono" style="font-size:26px;letter-spacing:.1em">' + jcode + '</span>'
+      };
+    }
+    if (kind === 'a2e') {
+      var r = B.randomCompressibleUPCA();
+      return {
+        kind: 'a2e', type: 'UPC-A', upca: r.upca, answer: r.upce, rule: r.rule,
+        title: '把 UPC-A 压缩成 UPC-E',
+        prompt: '<span class="mono">' + r.upca + '</span>（12 位）→ 写出 8 位 UPC-E',
+        inputLen: 8
+      };
+    }
+    var r2 = B.randomCompressibleUPCA();
+    return {
+      kind: 'e2a', type: 'UPC-E', upce: r2.upce, answer: r2.upca, rule: r2.rule,
+      title: '把 UPC-E 展开成 UPC-A',
+      prompt: '<span class="mono">' + r2.upce + '</span>（8 位）→ 写出 12 位 UPC-A',
+      inputLen: 12
+    };
+  }
+
+  function nextQuestion() {
+    var kind = state.drill.mode === 'mixed' ? pick(['check', 'check', 'judge', 'a2e', 'e2a']) : state.drill.mode;
+    state.drill.q = makeQuestion(kind);
+    state.drill.answered = false;
+    state.drill.t0 = Date.now();
+    renderDrill();
+  }
+
+  function updateStats() {
+    $('#stRight').textContent = state.drill.right;
+    $('#stTotal').textContent = state.drill.total;
+    $('#stRate').textContent = state.drill.total ? Math.round(state.drill.right / state.drill.total * 100) + '%' : '—';
+    $('#stStreak').textContent = state.drill.streak;
+    $('#stBest').textContent = state.drill.best;
+  }
+
+  function renderDrill() {
+    updateStats();
+    var q = state.drill.q;
+    if (!q) { $('#qcard').innerHTML = '<p class="msg">点击“随机测练”开始。</p>'; return; }
+    var badgeCls = q.kind === 'judge' ? ' judge' : '';
+    var badgeText = { check: '校验码填空', judge: '判断正误', a2e: 'UPC-A → UPC-E', e2a: 'UPC-E → UPC-A' }[q.kind];
+    var html = '<div class="qhead"><span class="qbadge' + badgeCls + '">' + badgeText + '</span>' +
+      (q.type ? '<span class="sub">' + B.MODELS[q.type].name + '</span>' : '') + '</div>' +
+      '<div class="qtext">' + q.title + '<div class="sub" style="font-weight:400;margin-top:8px">' + q.prompt + '</div></div>';
+
+    if (!state.drill.answered) {
+      if (q.kind === 'judge') {
+        html += '<div class="judge-btns"><button class="good" data-ans="ok">✓ 校验码正确</button>' +
+          '<button class="bad" data-ans="bad">✗ 校验码错误</button></div>';
+      } else {
+        html += '<div class="qanswer"><input id="drillInput" class="big" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="' +
+          (q.inputLen + 2) + '" placeholder="输入答案（' + q.inputLen + ' 位）"><button class="go" id="drillGo">提交</button></div>' +
+          '<p class="tiny" style="margin-top:8px">按回车提交；提交后按回车进入下一题。</p>';
+      }
+      html += '<div id="feedback"></div>';
+    } else {
+      html += renderFeedback();
+    }
+    $('#qcard').innerHTML = html;
+
+    if (q.kind === 'judge') {
+      $$('#qcard [data-ans]').forEach(function (b) {
+        b.addEventListener('click', function () { submit(q.kind === 'judge' ? b.getAttribute('data-ans') : ''); });
+      });
+    } else {
+      var input = $('#drillInput');
+      if (input) {
+        input.focus();
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); submit(input.value); }
+        });
+        $('#drillGo').addEventListener('click', function () { submit(input.value); });
+      }
+    }
+    if (state.drill.answered) {
+      $$('#qcard [data-next]').forEach(function (b) { b.addEventListener('click', nextQuestion); });
+    }
+  }
+
+  function renderFeedback() {
+    var q = state.drill.q;
+    var correct = state.drill.lastCorrect;
+    var cls = correct ? 'ok' : 'bad';
+    var html = '<div class="feedback ' + cls + '"><h3>' + (correct ? '✓ 答对了' : '✗ 答错了') + '</h3>';
+    html += '<div>正确答案：<span class="answer">' + esc(state.drill.answerText) + '</span></div>';
+    html += '<div style="margin-top:8px">' + state.drill.explain + '</div>';
+    html += '<div class="nextrow"><button class="btn primary" data-next>下一题 ⏎</button></div></div>';
+    return html;
+  }
+
+  function submit(value) {
+    if (state.drill.answered) { nextQuestion(); return; }
+    var q = state.drill.q;
+    var B2 = B;
+    var input = B2.clean(value);
+    var correct = false;
+    var answerText = '', explain = '';
+
+    if (q.kind === 'check') {
+      answerText = q.answer;
+      correct = input === q.answer;
+      var calc = B2.calcCheck(q.data);
+      explain = stepCards(calc) + '<p class="tiny">标准答案：' + q.data + '<b>' + calc.check + '</b>（Σ=' + calc.sum + '，个位 ' + calc.mod + '）</p>';
+    } else if (q.kind === 'judge') {
+      var v = B2.validate(q.type, q.code);
+      answerText = v.ok ? '校验码正确' : '校验码错误（应为 ' + v.expected + '）';
+      correct = (value === 'ok') === v.ok;
+      explain = '<p>按模 10 重算：数据位 <span class="mono">' + q.code.slice(0, -1) + '</span>，Σ = <b>' + v.calc.sum +
+        '</b>，正确校验码 = <b>' + v.expected + '</b>，题中末位 = <b>' + v.actual + '</b>。</p>' + stepCards(v.calc);
+    } else if (q.kind === 'a2e') {
+      answerText = q.answer;
+      correct = input === q.answer;
+      var c = B2.compressUPCA(q.upca);
+      explain = '<p>规则 <b>' + esc(c.rule) + '</b>：' + esc(c.ruleText) + '</p>' +
+        '<p>6 位数据 = <span class="mono" style="font-size:17px">' + c.data6 + '</span>，标记位 = ' + esc(c.data6.charAt(5)) +
+        '；校验码沿用 UPC-A 的 <b>' + c.check + '</b>。</p>' +
+        '<p>所以 UPC-E = <b class="mono" style="font-size:18px">' + c.upce + '</b>。</p>';
+    } else {
+      answerText = q.answer;
+      correct = input === q.answer;
+      var ex = B2.expandUPCE(q.upce);
+      explain = '<p>标记位 = <b>' + ex.marker + '</b>（' + esc(ex.ruleText) + '）</p>' +
+        '<p>厂商代码 = <span class="mono">' + ex.manufacturer + '</span>，商品代码 = <span class="mono">' + ex.item +
+        '</span>，系统码照抄，校验码 = <b>' + ex.check + '</b>。</p>' +
+        '<p>UPC-A = <b class="mono" style="font-size:18px">' + ex.upca + '</b>。</p>';
+    }
+
+    state.drill.answered = true;
+    state.drill.total++;
+    if (correct) {
+      state.drill.right++;
+      state.drill.streak++;
+      if (state.drill.streak > state.drill.best) state.drill.best = state.drill.streak;
+    } else {
+      state.drill.streak = 0;
+    }
+    state.drill.lastCorrect = correct;
+    state.drill.answerText = answerText;
+    state.drill.explain = explain;
+    renderDrill();
+  }
+
+  $('#modes').addEventListener('change', function (e) {
+    if (e.target && e.target.name === 'mode') {
+      state.drill.mode = e.target.value;
+      $$('#modes label').forEach(function (l) {
+        l.classList.toggle('on', l.querySelector('input').checked);
+      });
+      nextQuestion();
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (state.tab !== 'drill') return;
+    if (e.key === 'Enter' && state.drill.answered) {
+      e.preventDefault();
+      nextQuestion();
+    }
+  });
+  $('#resetStats').addEventListener('click', function () {
+    state.drill.right = 0; state.drill.total = 0; state.drill.streak = 0; state.drill.best = 0;
+    updateStats();
+  });
+
+  /* ---------------- 初始化 ---------------- */
+  $('#calcInput').value = '6901234567892';
+  $('#calcInput').placeholder = '输入 EAN-13（数据位或完整码）';
+  var qtab = (/[?&]tab=(calc|supp|drill)/.exec(location.search) || [])[1];
+  if (qtab === 'supp') {
+    $('#suppA').value = '042100005264';
+    $('#suppB').value = '04252614';
+  }
+  setTab(qtab || 'calc');
+})();
+</script>
+</body>
+</html>

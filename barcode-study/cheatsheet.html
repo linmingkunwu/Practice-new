@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>开卷速查卡 · EAN / UPC / GS1 差异与计算</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#64748b; --line:#cbd5e1; --teal:#0f766e; --teal-dark:#0b4f4a;
+    --teal-bg:#e8f5f2; --amber:#b45309; --amber-bg:#fff7e6; --red:#b91c1c; --red-bg:#fef2f2;
+    --blue:#1d4ed8; --blue-bg:#eef2ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+    color:var(--ink); background:#e7ecf2; font-size:8.15pt; line-height:1.48;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:210mm; height:297mm; padding:5mm 9mm 3.5mm; background:#fff;
+    margin:14px auto; box-shadow:0 3px 18px rgba(15,23,42,.16); overflow:hidden;
+    position:relative; display:flex; flex-direction:column;
+  }
+  @media print{
+    @page{ size:A4; margin:0; }
+    body{ background:#fff; }
+    .page{ margin:0; box-shadow:none; page-break-after:always; height:297mm; }
+    .page:last-child{ page-break-after:auto; }
+    .no-print{ display:none !important; }
+  }
+  /* ---------- 页眉 ---------- */
+  .hero{
+    border-radius:2.2mm; padding:2.4mm 4mm 2.2mm; color:#fff;
+    background:linear-gradient(100deg,#0b3b3a 0%,#0f766e 62%,#14958a 100%);
+    display:flex; align-items:flex-end; justify-content:space-between; gap:4mm;
+  }
+  .hero .kicker{ font-size:7.4pt; letter-spacing:.18em; color:#b8ece2; margin-bottom:1mm; }
+  .hero h1{ margin:0; font-size:16.5pt; letter-spacing:.02em; line-height:1.18; }
+  .hero .lead{ margin-top:1.4mm; font-size:7.8pt; color:#d9f6ef; }
+  .hero .lead b{ color:#fff; }
+  .hero .badge{ flex:0 0 auto; text-align:center; font-size:7.2pt; line-height:1.5;
+    border:.4mm solid rgba(255,255,255,.5); border-radius:2mm; padding:2mm 2.6mm; color:#eafffb; }
+  .hero .badge b{ font-size:10pt; display:block; }
+  /* ---------- 区块 ---------- */
+  .sec{ margin-top:1.7mm; }
+  .sec-h{ display:flex; align-items:center; gap:2mm; border-bottom:.5mm solid var(--teal);
+    padding-bottom:.6mm; margin-bottom:1.2mm; }
+  .sec-h .no{ flex:0 0 auto; width:5.4mm; height:5.4mm; border-radius:1.4mm; background:var(--teal);
+    color:#fff; font-weight:700; font-size:9pt; display:flex; align-items:center; justify-content:center; }
+  .sec-h h2{ margin:0; font-size:10.2pt; color:var(--teal-dark); letter-spacing:.02em; }
+  .sec-h .sub{ margin-left:auto; color:var(--muted); font-size:7.3pt; }
+  /* ---------- 卡片 ---------- */
+  .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:2.2mm; }
+  .card{ border:.35mm solid var(--line); border-left:1.1mm solid var(--teal); border-radius:1.6mm;
+    padding:1.8mm 2.2mm; background:#fcfefe; }
+  .card h3{ margin:0 0 1mm; font-size:8.4pt; color:var(--teal-dark); }
+  .card p{ margin:0; }
+  .card .big{ font-size:8.6pt; font-weight:700; }
+  .card ul{ margin:0; padding-left:3.6mm; }
+  .card li{ margin:.35mm 0; }
+  /* ---------- 表格 ---------- */
+  table.t{ width:100%; border-collapse:collapse; font-size:7.25pt; line-height:1.38; }
+  table.t th{ background:var(--teal-bg); color:var(--teal-dark); font-weight:700; text-align:left;
+    border:.3mm solid var(--line); padding:.8mm 1.2mm; white-space:nowrap; }
+  table.t td{ border:.3mm solid var(--line); padding:.7mm 1.2mm; vertical-align:top; }
+  table.t td.c, table.t th.c{ text-align:center; }
+  table.t tr:nth-child(even) td{ background:#f8fafc; }
+  table.t td.k{ background:var(--teal-bg) !important; color:var(--teal-dark); font-weight:700; white-space:nowrap; }
+  table.t.mini{ font-size:6.9pt; }
+  table.t.mini td, table.t.mini th{ padding:.55mm 1mm; }
+  table.t td.mono, .mono-cell{ font-size:6.8pt; white-space:nowrap; }
+  /* 首位奇偶模式：5 个一行的小格 */
+  .parity{ display:grid; grid-template-columns:repeat(5,1fr); gap:1.1mm; font-size:7.3pt; }
+  .parity div{ background:#f4fbf9; border:.25mm solid #cfe8e2; border-radius:1mm;
+    padding:.9mm 1mm; text-align:center; font-family:Consolas,"Cascadia Mono",monospace; letter-spacing:.03em; }
+  .parity div b{ color:var(--teal-dark); margin-right:1.2mm; font-family:"Microsoft YaHei",sans-serif; }
+  /* ---------- 网格 ---------- */
+  .grid2{ display:grid; grid-template-columns:1.02fr 1.18fr; gap:2.4mm; }
+  .grid2e{ display:grid; grid-template-columns:1fr 1fr; gap:2.4mm; }
+  /* ---------- 公式/提示 ---------- */
+  .formula{ background:linear-gradient(180deg,#f0fbf8,#f7fdfc); border:.35mm solid #a7d9cf;
+    border-left:1.1mm solid var(--teal); border-radius:1.6mm; padding:2mm 2.4mm; }
+  .formula .fline{ font-family:Consolas,"Cascadia Mono",monospace; font-size:9.2pt; font-weight:700;
+    color:var(--teal-dark); text-align:center; background:#fff; border:.3mm dashed #9fd4c9;
+    border-radius:1.2mm; padding:1.4mm 2mm; margin-bottom:1.6mm; }
+  ol.steps{ margin:0; padding-left:4.6mm; }
+  ol.steps li{ margin:.7mm 0; }
+  .kbd{ font-family:Consolas,"Cascadia Mono",monospace; background:#eef2f7; border:.25mm solid var(--line);
+    border-radius:.8mm; padding:0 1mm; font-size:7.6pt; }
+  .tip{ margin-top:1.5mm; font-size:7.6pt; color:#334155; }
+  .tip b{ color:var(--teal-dark); }
+  .tip.warn{ background:var(--amber-bg); border-left:.9mm solid var(--amber); border-radius:1mm;
+    padding:1.2mm 1.8mm; font-size:7.4pt; }
+  .tip.bad{ background:var(--red-bg); border-left:.9mm solid var(--red); border-radius:1mm;
+    padding:1.2mm 1.8mm; font-size:7.4pt; }
+  .worked{ margin-top:1.5mm; font-size:7.5pt; background:#f8fafc; border:.3mm solid var(--line);
+    border-radius:1mm; padding:1.3mm 1.8mm; font-family:Consolas,"Cascadia Mono",monospace; line-height:1.55; }
+  .worked b{ color:var(--teal-dark); font-family:"Microsoft YaHei",sans-serif; }
+  .em{ color:var(--red); font-weight:700; }
+  .hi{ background:#fff2a8; padding:0 .6mm; border-radius:.6mm; font-weight:700; }
+  /* ---------- 页脚 ---------- */
+  .foot{ margin-top:auto; padding-top:.5mm; border-top:.3mm solid var(--line);
+    color:var(--muted); font-size:6.7pt; display:flex; justify-content:space-between; gap:3mm; }
+  .foot b{ color:#475569; }
+  /* 两栏清单 */
+  .list2{ columns:2; column-gap:5mm; margin:0; padding-left:4.4mm; font-size:7.45pt; }
+  .list2 li{ margin:.55mm 0; break-inside:avoid; }
+  .flow{ display:grid; grid-template-columns:repeat(5,1fr); gap:1.6mm; margin-top:1.2mm; }
+  .flow .st{ border:.3mm solid #a7d9cf; background:#f4fbf9; border-radius:1.4mm; padding:1.6mm 1.8mm; font-size:7.2pt; }
+  .flow .st b{ display:block; color:var(--teal-dark); font-size:7.6pt; margin-bottom:.6mm; }
+  .chips{ display:flex; flex-wrap:wrap; gap:1.4mm; }
+  .chip{ border:.3mm solid #a7d9cf; background:#f4fbf9; border-radius:99px; padding:.7mm 2mm; font-size:7.2pt; color:var(--teal-dark); }
+  .chip b{ font-family:Consolas,monospace; }
+  .note-line{ font-size:7.3pt; color:var(--muted); margin-top:1.2mm; }
+  .mono{ font-family:Consolas,"Cascadia Mono",monospace; }
+  /* 第 2 页内容略少，稍微放大字号，方便打印阅读 */
+  #page2 table.t{ font-size:7.55pt; }
+  #page2 table.t.mini{ font-size:6.95pt; }
+  #page2 table.t.mini th{ padding:.6mm 1mm; }
+  #page2 table.t.mini td{ padding:.58mm 1mm; }
+  #page2 table.t th{ padding:.85mm 1.25mm; }
+  #page2 table.t td{ padding:.78mm 1.25mm; }
+  #page2 .tip{ font-size:7.45pt; }
+  #page2 .tip.warn, #page2 .tip.bad{ font-size:7.35pt; }
+  #page2 .worked{ font-size:7.35pt; }
+  #page2 .card p, #page2 .card li{ font-size:7.5pt; }
+  #page2 .card h3{ font-size:8.7pt; }
+  #page2 .list2{ font-size:7.5pt; }
+  #page2 .sec-h h2{ font-size:10.4pt; }
+  .terms{ border-top:.3mm dashed var(--line); margin-top:1.6mm; padding-top:1.3mm;
+    font-size:7.2pt; color:#334155; line-height:1.5; }
+  .terms b{ color:var(--teal-dark); }
+</style>
+</head>
+<body>
+
+<!-- ============================ 第 1 页 ============================ -->
+<section class="page" id="page1">
+  <div class="hero">
+    <div>
+      <div class="kicker">条码设计与应用 · 开卷考试随身卡</div>
+      <h1>EAN / UPC / GS1：差异 · 校验码 · 消零压缩</h1>
+      <div class="lead">先看关系，再背口诀，最后对表算。配合 <b>trainer.html</b> 每天练 20 分钟，考场上只查低频表。</div>
+    </div>
+    <div class="badge"><b>A4 × 2</b>双面打印<br>建议塑封</div>
+  </div>
+
+  <!-- 1 关系 -->
+  <div class="sec">
+    <div class="sec-h"><span class="no">1</span><h2>先理清关系：GS1 是“体系”，EAN / UPC 是“码制”</h2><span class="sub">概念题必考</span></div>
+    <div class="cards">
+      <div class="card">
+        <h3>GS1（全球统一标识系统）</h3>
+        <p>2005 年由 <b>EAN International</b> 与 <b>UCC</b> 合并成立。它是标准<b>体系</b>，不是某一种条码：<br>① 编码体系（GTIN / SSCC / GLN…）<br>② 数据载体（EAN/UPC、ITF-14、GS1-128、DataBar、二维码）<br>③ 数据交换（EDI / GDSN / EPCIS）</p>
+      </div>
+      <div class="card">
+        <h3>EAN / UPC（零售码制）</h3>
+        <p>是 GS1 体系里的<b>零售商品符号族</b>：EAN-13、EAN-8、UPC-A、UPC-E。分别对应 GTIN-13、GTIN-8、GTIN-12（UPC-E 只是 GTIN-12 的压缩表示）。<br><b>EAN</b> 1977 年欧洲起家；<b>UPC</b> 1973 年美国起家。</p>
+      </div>
+      <div class="card">
+        <h3>三句话记住</h3>
+        <ul>
+          <li>EAN-13 <b>首位为 0</b> 时就是 UPC-A（GTIN-12）；UPC-A = EAN-13 去掉首位 0。</li>
+          <li>UPC-E 是 UPC-A 的<b>消零压缩</b>码，校验码沿用压缩前的。</li>
+          <li>EAN-8 是<b>独立短码</b>，不是 EAN-13 的压缩码。</li>
+        </ul>
+      </div>
+    </div>
+
+    <table class="t" style="margin-top:2mm">
+      <tr>
+        <th style="width:15%">对比项</th><th>EAN-13</th><th>UPC-A</th><th>EAN-8</th><th>UPC-E</th>
+      </tr>
+      <tr><td class="k">总位数</td><td>13 位</td><td>12 位</td><td>8 位</td><td>8 位</td></tr>
+      <tr><td class="k">数字结构</td>
+        <td>厂商识别代码 7~10 位（含前缀码）+ 商品项目代码 5~2 位 + 校验码 1 位（4 种结构）</td>
+        <td>系统码 1 位 + 厂商代码 5 位 + 商品代码 5 位 + 校验码 1 位</td>
+        <td>前缀码 + 商品项目代码 + 校验码 1 位（编码中心分配）</td>
+        <td>系统码 1 位 + 压缩数据 6 位 + 校验码 1 位</td></tr>
+      <tr><td class="k">校验码</td><td>模 10 计算</td><td>模 10 计算</td><td>模 10 计算</td><td><span class="em">= 压缩前 UPC-A 的校验码</span>（不是对 8 位自算）</td></tr>
+      <tr><td class="k">符号模块数</td><td class="c">95</td><td class="c">95</td><td class="c">67</td><td class="c">51</td></tr>
+      <tr><td class="k">典型地区 / 用途</td><td>全球零售；中国 <b>690~699</b></td><td>北美零售；系统码 0/1 常规、2 称重、3 药品、4 店内、5 券</td><td>小包装零售（国际短码）</td><td>北美小包装（口香糖、唇膏等）</td></tr>
+      <tr><td class="k">与 GTIN 关系</td><td>GTIN-13</td><td>GTIN-12</td><td>GTIN-8</td><td>压缩表示的 GTIN-12</td></tr>
+      <tr><td class="k">是否消零压缩</td><td>否</td><td>否（但可被压缩）</td><td><span class="em">否</span>（独立短码）</td><td><b>是</b>（UPC-A → UPC-E）</td></tr>
+    </table>
+  </div>
+
+  <!-- 2 校验码 -->
+  <div class="sec">
+    <div class="sec-h"><span class="no">2</span><h2>校验码：一个公式打天下（EAN / UPC / ITF / SSCC 通用）</h2><span class="sub">必考 · 送分题</span></div>
+    <div class="grid2">
+      <div class="formula">
+        <div class="fline">C = ( 10 − ( Σ dᵢ·wᵢ mod 10 ) ) mod 10</div>
+        <ol class="steps">
+          <li>从<b>最右边</b>的数据位开始，权重 <b>3、1、3、1…</b> 交替；<b>校验位本身不参加计算</b>。</li>
+          <li>各位数字 × 权重后全部相加，得 S。</li>
+          <li>取 S 的个位，用 10 去减；差为 10 时写 <b>0</b>。</li>
+        </ol>
+        <div class="tip" style="margin-top:1.6mm">口诀：<b>右起三一，乘加求和，十减个位，零就是零</b>。</div>
+        <table class="t mini" style="margin-top:1.6mm">
+          <tr><th>码制</th><th class="c">数据位数</th><th class="c">最左数据位权重</th><th class="c">最右数据位权重</th></tr>
+          <tr><td class="k">EAN-13</td><td class="c">12（偶数）</td><td class="c">1</td><td class="c">3</td></tr>
+          <tr><td class="k">UPC-A</td><td class="c">11（奇数）</td><td class="c">3</td><td class="c">3</td></tr>
+          <tr><td class="k">EAN-8</td><td class="c">7（奇数）</td><td class="c">3</td><td class="c">3</td></tr>
+          <tr><td class="k">ITF-14 / SSCC-18</td><td class="c">13 / 17（奇数）</td><td class="c">3</td><td class="c">3</td></tr>
+        </table>
+        <div class="tip">记法：<span class="kbd">数据位个数为偶数 → 最左 ×1；为奇数 → 最左 ×3</span>；<b>最右永远是 ×3</b>，从右往左不会错。<b>UPC-E 不要直接算</b>：先展开成 UPC-A 再算（见第 5 块）。</div>
+      </div>
+      <div>
+        <table class="t">
+          <tr><th>码制</th><th>数据位（不含校验）</th><th class="c">Σ</th><th class="c">个位</th><th class="c">校验码</th><th>完整码</th></tr>
+          <tr><td class="k">EAN-13</td><td class="mono">690123456789</td><td class="c">128</td><td class="c">8</td><td class="c"><b>2</b></td><td class="mono">6901234567892</td></tr>
+          <tr><td class="k">UPC-A</td><td class="mono">03600029145</td><td class="c">58</td><td class="c">8</td><td class="c"><b>2</b></td><td class="mono">036000291452</td></tr>
+          <tr><td class="k">EAN-8</td><td class="mono">9638507</td><td class="c">86</td><td class="c">6</td><td class="c"><b>4</b></td><td class="mono">96385074</td></tr>
+          <tr><td class="k">ITF-14</td><td class="mono">1001234500001</td><td class="c">33</td><td class="c">3</td><td class="c"><b>7</b></td><td class="mono">10012345000017</td></tr>
+          <tr><td class="k">SSCC-18</td><td class="mono">10614141123456789</td><td class="c">143</td><td class="c">3</td><td class="c"><b>7</b></td><td class="mono">106141411234567897</td></tr>
+        </table>
+        <div class="worked">
+          <b>EAN-13 验算：</b>6×1 + 9×3 + 0×1 + 1×3 + 2×1 + 3×3 + 4×1 + 5×3 + 6×1 + 7×3 + 8×1 + 9×3<br>
+          = 6+27+0+3+2+9+4+15+6+21+8+27 = <b>128</b> → 128 mod 10 = 8 → 10−8 = <span class="hi">2</span>
+        </div>
+        <div class="tip warn" style="margin-top:1.8mm">
+          <b>三个小坑：</b>① 个位是 0 时校验码写 <b>0</b>，不要写 10；② EAN-13 首位是 0 的码等价于 UPC-A，校验码相同；③ 校验位永远不参加 Σ。
+        </div>
+        <div class="tip" style="margin-top:1.2mm">判断题：<b>去掉末位</b>代入算一遍，与末位比对；也可反向相乘复核。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 符号结构 -->
+  <div class="sec">
+    <div class="sec-h"><span class="no">3</span><h2>符号结构速记：模块数 · 空白区 · EAN-13 首位怎么藏进去</h2><span class="sub">结构题 / 判断题</span></div>
+    <div class="grid2e">
+      <div>
+        <table class="t mini">
+          <tr><th>码制</th><th class="c">模块数</th><th>拆解（起始 + 数据 + 中间 + 数据 + 终止）</th></tr>
+          <tr><td class="k">EAN-13</td><td class="c">95</td><td>3(101) + 42 + 5(01010) + 42 + 3(101)</td></tr>
+          <tr><td class="k">UPC-A</td><td class="c">95</td><td>与 EAN-13 同构；左 6 位全用 A 码（奇），首位不编码进条空</td></tr>
+          <tr><td class="k">EAN-8</td><td class="c">67</td><td>3(101) + 28 + 5(01010) + 28 + 3(101)</td></tr>
+          <tr><td class="k">UPC-E</td><td class="c">51</td><td>3(101) + 42 + 6(010101)，无中间分隔符</td></tr>
+        </table>
+        <div class="tip" style="margin-top:1.2mm; font-size:7.2pt">
+          <b>尺寸/颜色：</b>EAN-13 100% 名义尺寸约 <b>37.29 × 25.93 mm</b>（含空白区），放大系数 0.80~2.00；左空白 ≥ <b>11X</b>、右 ≥ <b>7X</b>。条深底浅，<span class="em">红、橙不能作条色</span>（红光扫描器读不出）。
+        </div>
+      </div>
+      <div>
+        <div class="parity">
+          <div><b>0</b>AAAAAA</div><div><b>1</b>AABABB</div><div><b>2</b>AABBAB</div><div><b>3</b>AABBBA</div><div><b>4</b>ABAABB</div>
+          <div><b>5</b>ABBAAB</div><div><b>6</b>ABBBAA</div><div><b>7</b>ABABAB</div><div><b>8</b>ABABBA</div><div><b>9</b>ABBABA</div>
+        </div>
+        <div class="tip" style="margin-top:1.4mm">
+          <b>上表：首位数字 → 左侧 6 位的奇偶模式。</b><b>A = 奇（L 码），B = 偶（G 码）</b>：EAN-13 的<b>第 1 位不直接印成条空</b>，而是用左边 6 位的奇偶排列来“隐含”表达；右边 6 位固定用 R 码。<br>
+          <b>UPC-A 与 EAN-13 符号的唯一结构差别：</b>UPC-A 左 6 位全 A、没有首位奇偶编码，系统码另印在符号外；所以 UPC-A 符号 = 首位为 0 的 EAN-13 符号。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 答题模板 -->
+  <div class="sec">
+    <div class="sec-h" style="margin-bottom:1mm"><span class="no">4</span><h2>开卷简答题模板：按采分点往里套</h2><span class="sub">对比题 / 表述题</span></div>
+    <div class="grid2e" style="gap:2mm">
+      <div class="card" style="border-left-color:var(--blue); padding:1.1mm 2mm">
+        <p style="font-size:7.05pt; line-height:1.33">
+          <b>“EAN / UPC / GS1 异同”</b><b>① 定位：</b>GS1 是标准体系，EAN / UPC 是体系内零售码制。<b>② 位数：</b>13 / 12 / 8 / 8 位。<b>③ 转换：</b>UPC-A = EAN-13 首位 0；UPC-E 压缩 UPC-A；EAN-8 独立短码。<b>④ 现状：</b>2005 年统一归 GS1 → GTIN-13 / 12 / 8。
+        </p>
+      </div>
+      <div class="card" style="border-left-color:var(--blue); padding:1.1mm 2mm">
+        <p style="font-size:7.05pt; line-height:1.33">
+          <b>“校验码 / 压缩怎么算”</b><b>① 公式：</b>C = (10 − Σ mod 10) mod 10，校验位不参与，右起 3、1 交替。<b>② 过程：</b>加权和 → 取个位 → 10 减（个位 0 写 0）。<b>③ 压缩：</b>系统码 0/1 → 零结构选规则 → 6 位数据 + <b>抄 UPC-A 校验码</b>。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>依据：</b>GS1 General Specifications · ISO/IEC 15420 · GB 12904《商品条码》</span>
+    <span class="mono">barcode-study / cheatsheet · 2026-10-21</span>
+  </div>
+</section>
+
+<!-- ============================ 第 2 页 ============================ -->
+<section class="page" id="page2">
+  <!-- 5 消零压缩 -->
+  <div class="sec" style="margin-top:0">
+    <div class="sec-h"><span class="no">5</span><h2>UPC-E 消零压缩：4 条规则 + 反向展开（大题主战场）</h2><span class="sub">计算 + 判断 + 转换</span></div>
+    <div class="grid2" style="grid-template-columns:1.27fr 1fr">
+      <div>
+        <div class="tip" style="margin:0 0 1.4mm; font-size:7.5pt">
+          <b>原理：</b>UPC-A 12 位 → UPC-E 8 位，靠“厂商代码尾部的零 + 商品代码开头的零”<b>净省 4 位</b>（消去 4~5 个零，必要时用标记位补 1 位），用 6 位数据 + 1 个“标记位”表示；<b>校验码照抄压缩前 UPC-A 的</b>。前提：UPC-A 系统码只能是 <b>0 或 1</b>。<br>
+          <b>别数错：</b>“6 位”指中间的压缩数据；<b>整个 UPC-E 是 8 位</b>（1 系统码 + 6 数据 + 1 校验）。
+        </div>
+        <table class="t">
+          <tr><th class="c" style="width:9%">标记位<br>（数据第 6 位）</th><th>压缩条件（UPC-A 中零的分布）</th><th>UPC-E 的 6 位数据</th><th style="width:29%">完整例子</th></tr>
+          <tr>
+            <td class="c k">0 / 1 / 2</td>
+            <td>厂商代码 <b>M₃M₄M₅ = 000/100/200</b>（第 4、5 位为 00，第 3 位为 0~2），商品代码前 2 位为 <b>00</b>（商品 ≤ 00999）</td>
+            <td>M₁M₂ P₃P₄P₅ <b>M₃</b></td>
+            <td class="mono">0-42100-00526-4<br>→ <b>04252614</b></td>
+          </tr>
+          <tr>
+            <td class="c k">3</td>
+            <td>厂商代码末 2 位为 <b>00</b>，且第 3 位为 3~9；商品代码前 3 位为 <b>000</b>（商品 ≤ 00099）</td>
+            <td>M₁M₂M₃ P₄P₅ <b>3</b></td>
+            <td class="mono">0-12300-00045-1<br>→ <b>01234531</b></td>
+          </tr>
+          <tr>
+            <td class="c k">4</td>
+            <td>厂商代码末 1 位为 <b>0</b>（第 4 位非 0）；商品代码前 4 位为 <b>0000</b>（商品 ≤ 00009）</td>
+            <td>M₁M₂M₃M₄ P₅ <b>4</b></td>
+            <td class="mono">0-12340-00005-3<br>→ <b>01234543</b></td>
+          </tr>
+          <tr>
+            <td class="c k">5~9</td>
+            <td>厂商代码末位<b>非 0</b>；商品代码为 <b>00005~00009</b></td>
+            <td>M₁M₂M₃M₄M₅ <b>P₅</b></td>
+            <td class="mono">0-12345-00006-5<br>→ <b>01234565</b></td>
+          </tr>
+        </table>
+        <div class="tip" style="margin-top:1.6mm"><b>判断顺序：</b>按 0/1/2 → 3 → 4 → 5~9 依次对号；都不符合就<b>不能压缩</b>（如 <span class="mono">036000291452</span> 只能保留 UPC-A）。</div>
+      </div>
+      <div>
+        <table class="t">
+          <tr><th class="c">UPC-E 数据 X₁…X₆ 的<br>第 6 位（标记）</th><th class="c">展开后厂商代码<br>（5 位）</th><th class="c">商品代码<br>（5 位）</th></tr>
+          <tr><td class="c k">0 / 1 / 2</td><td class="c mono">X₁ X₂ X₆ 0 0</td><td class="c mono">0 0 X₃ X₄ X₅</td></tr>
+          <tr><td class="c k">3</td><td class="c mono">X₁ X₂ X₃ 0 0</td><td class="c mono">0 0 0 X₄ X₅</td></tr>
+          <tr><td class="c k">4</td><td class="c mono">X₁ X₂ X₃ X₄ 0</td><td class="c mono">0 0 0 0 X₅</td></tr>
+          <tr><td class="c k">5~9</td><td class="c mono">X₁ X₂ X₃ X₄ X₅</td><td class="c mono">0 0 0 0 X₆</td></tr>
+        </table>
+        <div class="tip" style="margin-top:1.4mm"><b>系统码照抄</b>（只能是 0/1），<b>校验码不变</b>（就是 UPC-A 的校验码）。</div>
+        <div class="worked" style="margin-top:1.6mm">
+          <b>反向展开例：</b>UPC-E <span class="mono">04252614</span><br>
+          数据 425261 → 标记位 = 1 → 厂商 = 4 2 <b>1</b> 00 = 42100，商品 = 00 5 2 6 = 00526<br>
+          → UPC-A 数据 <span class="mono">0 42100 00526</span>，加校验得 <span class="mono">042100005264</span><br>
+          验算 Σ = 0×3+4×1+2×3+1×1+0+0+0+0+5×3+2×1+6×3 = 46 → 校验 <b>4</b> ✓（与 UPC-E 末位 4 相同）
+        </div>
+      </div>
+    </div>
+
+    <div class="cards" style="grid-template-columns:repeat(3,1fr); margin-top:2.2mm">
+      <div class="card" style="border-left-color:var(--red); background:var(--red-bg)">
+        <h3 style="color:var(--red)">陷阱 ①：校验码不能对 8 位自算</h3>
+        <p>UPC-E <span class="mono">04252614</span>：若把 <span class="mono">0425261</span> 当普通 8 位码算，校验码是 <b>0</b>；实际是 <b>4</b>。正确做法：<b>先展开成 UPC-A 再算/抄</b>。</p>
+      </div>
+      <div class="card" style="border-left-color:var(--amber); background:var(--amber-bg)">
+        <h3 style="color:var(--amber)">陷阱 ②：不是所有 UPC-A 都能压缩</h3>
+        <p>零的分布必须正好匹配某条规则（净减 4 位）。系统码不是 0/1、或零的位置不对（如 036000291452），<b>只能保留 UPC-A</b>。</p>
+      </div>
+      <div class="card" style="border-left-color:var(--blue); background:var(--blue-bg)">
+        <h3 style="color:var(--blue)">陷阱 ③：标记位不是额外字段</h3>
+        <p>标记位就是 6 位数据的<b>第 6 位</b>，展开时它回到厂商代码里；<b>EAN-8 不是压缩码</b>，不能把 EAN-13 压成 EAN-8。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 GTIN 家族 -->
+  <div class="sec">
+    <div class="sec-h"><span class="no">6</span><h2>GTIN 家族与载体选择：同一个商品，不同包装用不同码</h2><span class="sub">选择/简答题</span></div>
+    <div class="grid2e">
+      <div>
+        <table class="t mini">
+          <tr><th>标识代码</th><th class="c">位数</th><th>最常用载体</th><th>典型对象</th></tr>
+          <tr><td class="k">GTIN-8</td><td class="c">8</td><td>EAN-8</td><td>小包装零售单品</td></tr>
+          <tr><td class="k">GTIN-12</td><td class="c">12</td><td>UPC-A（UPC-E 压缩）</td><td>北美零售单品</td></tr>
+          <tr><td class="k">GTIN-13</td><td class="c">13</td><td>EAN-13</td><td>全球零售单品（中国）</td></tr>
+          <tr><td class="k">GTIN-14</td><td class="c">14</td><td>ITF-14</td><td>箱 / 包装单元</td></tr>
+          <tr><td class="k">SSCC-18</td><td class="c">18</td><td>GS1-128（AI 00）</td><td>物流单元（托盘等）</td></tr>
+        </table>
+        <div class="tip" style="margin-top:1.4mm">
+          <b>互转：</b>GTIN-13 = <b>0</b> + GTIN-12（UPC-A）；GTIN-14 = 包装指示符 + GTIN-13 <b>去掉校验位后的 12 位</b> + 重算校验（<b>指示符为 0 时校验码与 GTIN-13 相同</b>）。<br>
+          <b>ITF-14</b>：14 位，校验算法与 EAN 相同；印刷需加<b>保护条（bearer bar）</b>，常用于瓦楞纸箱。
+        </div>
+      </div>
+      <div>
+        <table class="t mini">
+          <tr><th>GS1-128 常用 AI</th><th>含义</th><th>GS1-128 常用 AI</th><th>含义</th></tr>
+          <tr><td class="mono">00</td><td>SSCC（18 位）</td><td class="mono">11</td><td>生产日期 YYMMDD</td></tr>
+          <tr><td class="mono">01</td><td>GTIN（14 位）</td><td class="mono">15</td><td>保质期（最佳食用）</td></tr>
+          <tr><td class="mono">10</td><td>批号</td><td class="mono">17</td><td>有效期</td></tr>
+          <tr><td class="mono">21</td><td>序列号</td><td class="mono">310n</td><td>净重（kg，n 为小数位）</td></tr>
+          <tr><td class="mono">30</td><td>数量</td><td class="mono">240/241</td><td>附加产品标识 / 客户料号</td></tr>
+        </table>
+        <div class="tip" style="margin-top:1.4mm">
+          <b>载体选择：</b>零售单品 → EAN-13 / UPC-A（小包装 EAN-8 / UPC-E）；箱 → ITF-14；物流与追溯 → GS1-128（Code 128 + 括号 AI + FNC1）；生鲜散装/优惠券 → GS1 DataBar；高密度/扫码营销 → GS1 DataMatrix / QR。<br>
+          示例：<span class="mono">(01)06901234567892(17)261231(10)AB-123</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 易错 + 开卷 -->
+  <div class="sec">
+    <div class="sec-h"><span class="no">7</span><h2>开卷考作战：易错清单 + 5 步流程</h2><span class="sub">考前 10 分钟看这一块</span></div>
+    <div class="grid2e">
+      <div>
+        <div class="card" style="border-left-color:var(--red)">
+          <h3>高频易错 10 条</h3>
+          <ol class="list2" style="columns:2">
+            <li>校验位<b>不参加</b> Σ。</li>
+            <li>权重从<b>最右数据位 ×3</b> 起，向左 3、1 交替。</li>
+            <li>个位为 0 → 校验码 <b>0</b>。</li>
+            <li>EAN-13 首位 0 = UPC-A，校验码相同。</li>
+            <li>UPC-E 校验码<b>抄 UPC-A</b>，不能自算。</li>
+            <li>UPC-A → UPC-E 需系统码 0/1。</li>
+            <li>EAN-8 是独立短码，<b>不是</b>压缩码。</li>
+            <li>GTIN-14 的指示符<b>不是</b>校验位。</li>
+            <li>SSCC-18 的“00”是 AI，不是数据。</li>
+            <li>ITF-14 校验与 EAN <b>同算法</b>。</li>
+          </ol>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-left-color:var(--teal)">
+          <h3>计算/压缩题的 5 步流程</h3>
+          <ol style="margin:0; padding-left:4.4mm; font-size:7.5pt">
+            <li><b>数位数、定码制</b>：13/12/8/14/18 位分别是什么。</li>
+            <li><b>划掉校验位</b>，从右往左标 3、1、3、1…</li>
+            <li><b>列乘法表</b>求和，取个位，10 减，得校验码；必要时用“完整码反代”检查。</li>
+            <li><b>压缩题</b>：先圈出厂商/商品代码里的连续零，对 4 条规则选标记位；写出 6 位数据。</li>
+            <li><b>反查</b>：把 UPC-E 展开回 UPC-A，重算校验，与原码对照。</li>
+          </ol>
+          <div class="tip warn" style="margin-top:1.4mm">
+            <b>携带建议：</b>本卡正反面打印 1 张 + 空白计算纸 2 张 + 2 支笔。若考场<b>只允许带教材</b>：把“校验码 / 消零压缩 / GTIN 家族”三块抄成便利贴贴到教材对应页，并在书口贴三个索引标签。
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:1.2mm; font-size:7.2pt">
+      <b>开卷≠不用背：</b>高频结论要形成条件反射（95 模块、690~699、UPC-E 四条规则、校验码口诀），翻书只查低频表（前缀码、AI、尺寸表）。<b>考前 3 天：</b>每天用 <span class="mono">trainer.html</span> 刷 15 道校验码 + 15 道压缩题，目标每题 ≤ 90 秒。
+    </div>
+    <div class="terms">
+      <b>术语中英对照：</b>GS1＝全球统一标识系统（2005 年 EAN International + UCC 合并）· GTIN＝全球贸易项目代码 · SSCC＝系列货运包装箱代码 · AI＝应用标识符 · FNC1＝GS1 数据分隔符 · JAN＝日本 EAN-13 · UCC/EAN-128＝GS1-128 的旧称 · EAN/UPC 符号族＝EAN-13、EAN-8、UPC-A、UPC-E。
+    </div>
+  </div>
+
+  <div class="foot">
+    <span><b>说明：</b>示例均按 GS1 规则构造、可逐位验算；尺寸/前缀以教材与 GB 12904、GS1 General Specifications 为准。</span>
+    <span class="mono">barcode-study / cheatsheet p.2</span>
+  </div>
+</section>
+
+<script>
+  // 预览辅助：?pg=2 只显示第 2 页，方便截图检查（不影响打印）
+  (function () {
+    var m = /[?&]pg=2\b/.exec(location.search);
+    if (m) {
+      var p1 = document.getElementById('page1');
+      if (p1) p1.style.display = 'none';
+      document.body.style.background = '#fff';
+    }
+    // ?debug=1：把页面内容高度写进 title，便于检查是否溢出
+    if (/[?&]debug=1\b/.test(location.search)) {
+      var info = [];
+      document.querySelectorAll('.page').forEach(function (p, i) {
+        var h0 = p.offsetHeight;
+        p.style.height = 'auto';
+        p.style.overflow = 'visible';
+        info.push('p' + (i + 1) + ' content=' + p.offsetHeight + ' box=' + h0);
+      });
+      document.title = info.join(' | ');
+    }
+  })();
+</script>
+</body>
+</html>
+

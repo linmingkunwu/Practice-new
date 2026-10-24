@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>条码技术与应用 本科分册·第二版 开卷手册</title>
+<style>
+  :root{--ink:#142033;--muted:#637083;--teal:#0f766e;--teal2:#0b4f4a;--line:#cbd5e1;--amber:#b45309}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;color:var(--ink);background:#e7ecf2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page{width:210mm;height:297mm;background:#fff;margin:14px auto;box-shadow:0 3px 18px rgba(15,23,42,.16);overflow:hidden;position:relative}
+  @media print{@page{size:A4;margin:0}body{background:#fff}.page{margin:0;box-shadow:none;page-break-after:always;height:297mm}.page:last-child{page-break-after:auto}}
+  /* cover */
+  .cover{background:radial-gradient(120% 90% at 10% 0%,#0f766e 0%,#0b4f4a 45%,#072f2d 100%);color:#fff;padding:18mm 17mm;display:flex;flex-direction:column}
+  .cover .kicker{font-size:8.5pt;letter-spacing:.18em;color:#bfe9e1;text-transform:uppercase}
+  .cover h1{font-size:30pt;line-height:1.18;margin:6mm 0 0;letter-spacing:.02em}
+  .cover h1 small{display:block;font-size:15pt;font-weight:400;color:#d7f5ee;margin-top:2.2mm}
+  .cover .sub{font-size:11pt;color:#d7f5ee;margin-top:5mm;line-height:1.8}
+  .cover .rule{height:.6mm;width:38mm;background:#f2c66d;margin:7mm 0 5mm}
+  .cover .badges{display:flex;gap:3mm;flex-wrap:wrap;margin-top:2mm}
+  .cover .badge{border:.35mm solid rgba(255,255,255,.45);border-radius:2mm;padding:2.2mm 3mm;font-size:8pt;color:#eafffb;line-height:1.5;min-width:36mm}
+  .cover .badge b{display:block;font-size:14pt;color:#fff;line-height:1.25}
+  .cover .note{margin-top:auto;font-size:7.6pt;color:#a9d8d0;line-height:1.7;border-top:.3mm solid rgba(255,255,255,.28);padding-top:4mm}
+  .cover .note b{color:#fff}
+  /* toc */
+  .toc{padding:12mm 15mm 10mm;display:flex;flex-direction:column}
+  .toc .head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:.7mm solid var(--teal);padding-bottom:2.4mm}
+  .toc h2{margin:0;font-size:15pt;color:var(--teal2)}
+  .toc .head .sub{font-size:7.4pt;color:var(--muted);text-align:right;line-height:1.5}
+  .toc .lead{font-size:8.6pt;color:#334155;margin:3mm 0 3.2mm;line-height:1.7}
+  table.toc{width:100%;border-collapse:collapse;font-size:8.5pt;line-height:1.45}
+  table.toc th{background:#e8f5f2;color:var(--teal2);text-align:left;border:.3mm solid var(--line);padding:1.1mm 1.6mm;font-size:8pt}
+  table.toc td{border:.3mm solid var(--line);padding:1.05mm 1.6mm;vertical-align:top}
+  table.toc tr.part td{background:#f0fdfa;font-weight:700;color:var(--teal2)}
+  table.toc td.pg{text-align:center;white-space:nowrap;font-family:Consolas,"Cascadia Mono",monospace;color:var(--teal2);font-weight:700}
+  table.toc td.ch{white-space:nowrap;font-weight:700;color:#142033}
+  .box{border:.35mm solid var(--line);border-left:1.1mm solid var(--teal);background:#f8fafc;border-radius:1.2mm;padding:2.2mm 2.8mm;margin-top:2.6mm;font-size:8.1pt;line-height:1.65}
+  .box.amber{border-left-color:var(--amber);background:#fffbeb}
+  .box b{color:var(--teal2)}
+  .box .mono{font-family:Consolas,"Cascadia Mono",monospace}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:2.6mm}
+  .foot{margin-top:auto;border-top:.3mm solid var(--line);padding-top:1.6mm;color:var(--muted);font-size:7pt;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<section class="page cover">
+  <div class="kicker">开卷考试 · 个人复习手册</div>
+  <h1>条码技术与应用<small>本科分册·第二版　开卷手册</small></h1>
+  <div class="rule"></div>
+  <div class="sub">第 1~11 章 内容级考点<br>速查卡 + 补差页 + 教材页码索引</div>
+  <div class="badges">
+    <div class="badge"><b>24 页</b>A4 · 双面 12 张</div>
+    <div class="badge"><b>11 章</b>逐章内容级覆盖</div>
+    <div class="badge"><b>+18</b>扫描 PDF 页码偏移</div>
+  </div>
+  <div class="note">
+    <b>依据：</b>《条码技术与应用（本科分册·第二版）》张成海、张铎、赵守香、许国银 编著，清华大学出版社 2018，ISBN 978-7-302-48504-9。<br>
+    <b>说明：</b>本手册为个人复习整理，按教材扫描版原文逐章 OCR + 关键页原文核对；页码均为<b>书上页码</b>。考试范围以老师课件/复习课为准。
+  </div>
+</section>
+
+<section class="page toc">
+  <div class="head">
+    <h2>使用说明 & 总目录</h2>
+    <div class="sub">开卷考试建议先看第 2 页<br>再按题目关键词查目录/索引</div>
+  </div>
+  <div class="lead">本手册把“第 1~6 章内容级考点”“第 7~11 章考点清单”“开卷速查卡”“补差页 v2”合并成一本；每页页眉标注教材页码范围，页脚保留分册页码。手册页码为连续页码（P1~P24），方便目录定位。</div>
+
+  <table class="toc">
+    <tr><th style="width:16%">部分</th><th style="width:52%">内容</th><th style="width:16%">对应章节</th><th style="width:16%">手册页码</th></tr>
+    <tr class="part"><td>封面</td><td>标题、版本、使用说明</td><td>—</td><td class="pg">P1</td></tr>
+    <tr class="part"><td>使用说明</td><td>总目录、印刷建议、开卷路线</td><td>—</td><td class="pg">P2</td></tr>
+    <tr class="part"><td>第 1~6 章</td><td>内容级考点（基础、GS1、编码、零售、储运、物流单元）</td><td>第1~6章</td><td class="pg">P3~10</td></tr>
+    <tr><td></td><td>第 1 章 条码概述</td><td class="ch">第1章</td><td class="pg">P3</td></tr>
+    <tr><td></td><td>第 2 章 GS1 标准体系</td><td class="ch">第2章</td><td class="pg">P4</td></tr>
+    <tr><td></td><td>第 3 章 编码技术（代码校验）</td><td class="ch">第3章</td><td class="pg">P5</td></tr>
+    <tr><td></td><td>第 4 章 零售商品条码（上/下）</td><td class="ch">第4章</td><td class="pg">P6~7</td></tr>
+    <tr><td></td><td>第 5 章 储运包装条码（ITF-14）</td><td class="ch">第5章</td><td class="pg">P8</td></tr>
+    <tr><td></td><td>第 6 章 物流单元条码（SSCC/GS1-128）</td><td class="ch">第6章</td><td class="pg">P9</td></tr>
+    <tr><td></td><td>第 1~6 章计算专题 + 对比表 + 索引</td><td class="ch">综合</td><td class="pg">P10</td></tr>
+    <tr class="part"><td>第 7~11 章</td><td>内容级考点（应用篇）</td><td>第7~11章</td><td class="pg">P11~16</td></tr>
+    <tr><td></td><td>第 7 章 制造业生产线</td><td class="ch">第7章</td><td class="pg">P11</td></tr>
+    <tr><td></td><td>第 8 章 GS1 与供应链管理</td><td class="ch">第8章</td><td class="pg">P12</td></tr>
+    <tr><td></td><td>第 9 章 GS1 与物联网应用</td><td class="ch">第9章</td><td class="pg">P13</td></tr>
+    <tr><td></td><td>第 10 章 GS1 与电子商务</td><td class="ch">第10章</td><td class="pg">P14</td></tr>
+    <tr><td></td><td>第 11 章 未来发展与应用趋势</td><td class="ch">第11章</td><td class="pg">P15</td></tr>
+    <tr><td></td><td>第 7~11 章小结 + 课后题 + 索引</td><td class="ch">综合</td><td class="pg">P16</td></tr>
+    <tr class="part"><td>附录 A</td><td>开卷速查卡（EAN/UPC/UPC-E/校验码）</td><td>速查</td><td class="pg">P17~18</td></tr>
+    <tr class="part"><td>附录 B</td><td>补差页 v2（本科 vs 高职 + GS1/零售/物流细节）</td><td>补差</td><td class="pg">P19~24</td></tr>
+  </table>
+
+  <div class="two">
+    <div class="box">
+      <b>开卷 3 步：</b><br>
+      ① 计算题先翻 <b>P10 计算专题</b> 或 <b>P17~18 速查卡</b>，确认“商品条码 10−个位 / 代码校验取余数”；<br>
+      ② 简答/名解按题目关键词查 <b>目录</b> 或 <b>P10/P16 索引</b>；<br>
+      ③ 案例题先写“用什么码 → 解决什么问题 → 效果”，再补教材细节。
+    </div>
+    <div class="box amber">
+      <b>页码对照：</b>本手册页码是连续页码；每页页眉还标了<b>教材页码</b>（如 P193~233）。<br>
+      扫描版 PDF 页码 = <b>书上页码 + 18</b>；例：书上 P248 → 扫描 PDF 第 266 页。<br>
+      打印：A4、实际大小 100%、双面；共 24 页 = 12 张纸。
+    </div>
+  </div>
+
+  <div class="foot"><span>条码技术与应用（本科分册·第二版）开卷手册 · 个人复习用</span><span>P2 / 24</span></div>
+</section>
+
+</body>
+</html>
